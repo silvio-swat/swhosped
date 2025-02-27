@@ -1,0 +1,83 @@
+<div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-semibold ml-2">Portal de Reservas</h1>
+            <button pButton type="button" label="Login" class="p-button-sm p-button-outlined text-white mr-2"></button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-semibold text-gray-800">Encontre sua hospedagem ideal</h2>
+                <p class="text-lg text-gray-600">Procurando um lugar para relaxar? Pesquise entre as opções de
+                    acomodações.</p>
+            </div>
+
+            <!-- Search Filters Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Filtros de Pesquisa</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">Localização</label>
+                        <input type="text" id="location" pInputText class="p-inputtext p-2 w-full border rounded-md">
+                    </div>
+                    <div>
+                        <label for="checkin" class="block text-sm font-medium text-gray-700">Data de Check-in</label>
+                        <input type="date" id="checkin" pInputText class="p-inputtext p-2 w-full border rounded-md">
+                    </div>
+                    <div>
+                        <label for="checkout" class="block text-sm font-medium text-gray-700">Data de Check-out</label>
+                        <input type="date" id="checkout" pInputText class="p-inputtext p-2 w-full border rounded-md">
+                    </div>
+                </div>
+                <button pButton type="button" label="Buscar" class="p-button-lg p-button-success mt-4 w-full"></button>
+            </div>
+
+            <!-- Accommodation List -->
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/500x300" alt="Hotel 1" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-semibold text-gray-800">Hotel Maravilha</h4>
+                        <p class="text-gray-600">Localização central, Wi-Fi grátis, piscina.</p>
+                        <p class="text-lg text-blue-600 mt-2">R$ 200 / noite</p>
+                        <button pButton type="button" label="Reservar Agora"
+                            class="p-button-sm p-button-warning mt-4 w-full"></button>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/500x300" alt="Hotel 2" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-semibold text-gray-800">Pousada Tranquila</h4>
+                        <p class="text-gray-600">Vista para o mar, café da manhã incluso.</p>
+                        <p class="text-lg text-blue-600 mt-2">R$ 180 / noite</p>
+                        <button pButton type="button" label="Reservar Agora"
+                            class="p-button-sm p-button-warning mt-4 w-full"></button>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/500x300" alt="Hotel 3" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-semibold text-gray-800">Resort Relax</h4>
+                        <p class="text-gray-600">Pacotes exclusivos, spa e fitness.</p>
+                        <p class="text-lg text-blue-600 mt-2">R$ 500 / noite</p>
+                        <button pButton type="button" label="Reservar Agora"
+                            class="p-button-sm p-button-warning mt-4 w-full"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4 mt-12">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Portal de Reservas | Todos os direitos reservados</p>
+        </div>
+    </footer>
+</div>
