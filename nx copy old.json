@@ -17,6 +17,7 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
+  "nxCloudId": "67bf8f12a30eaa7dc4e09d9b",
   "targetDefaults": {
     "@angular-devkit/build-angular:browser": {
       "cache": true,

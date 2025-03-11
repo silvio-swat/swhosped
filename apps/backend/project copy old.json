@@ -35,9 +35,7 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/backend/jest.config.js",
         "passWithNoTests": true
       }
     }
