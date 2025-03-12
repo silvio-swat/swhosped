@@ -1,10 +1,13 @@
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 import { Logger } from '@nestjs/common';
 import { Cliente } from './src/cliente/cliente.entity';
+import { Usuario } from './src/usuario/entities/usuario.entity';
+import { Acomodacao } from './src/acomodacao/entities/acomodacao.entity';
+import { Reserva } from './src/reserva/entities/reserva.entity';
 import { defineConfig } from '@mikro-orm/postgresql';
 
 export default defineConfig({
-  entities: [Cliente],
+  entities: [Cliente, Usuario, Acomodacao, Reserva],
   dbName: 'swhosped',
   user: 'silviosw',
   password: '123456',
