@@ -1,3 +1,54 @@
+<div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center">
+          <!-- Título -->
+          <h1 class="text-2xl font-semibold ml-2">Portal de Reservas</h1>
+      
+          <!-- Botão Menu Responsivo -->
+          <button class="lg:hidden" (click)="toggleMenu()">
+            <i class="pi pi-bars text-2xl"></i>
+          </button>
+      
+          <!-- Navegação -->
+          <nav class="hidden lg:flex space-x-4">
+            <ul class="flex space-x-4">
+              <li><a pRipple class="hover:text-gray-300" routerLink="/home">Home</a></li>
+              <li><a pRipple class="hover:text-gray-300" routerLink="/sobre">Sobre</a></li>
+              <li><a pRipple class="hover:text-gray-300" routerLink="/contato">Contato</a></li>
+            </ul>
+          </nav>
+      
+          <!-- Botão de Login -->
+          <button pButton type="button" label="Login"    class="p-button-sm p-button-outlined text-white mr-2"></button>
+          <button pButton type="button" label="Cadastro" routerLink="/cadastro-usuario" class="p-button-sm p-button-outlined text-white mr-2"></button>
+        </div>
+      
+        <!-- Menu Responsivo (Dropdown) -->
+        <div *ngIf="menuAberto" class="lg:hidden bg-blue-600 p-4">
+          <ul class="space-y-2">
+            <li><a pRipple class="block" routerLink="/home">Home</a></li>
+            <li><a pRipple class="block" routerLink="/sobre">Sobre</a></li>
+            <li><a pRipple class="block" routerLink="/contato">Contato</a></li>
+          </ul>
+        </div>
+      </header>
+
+    <!-- Main Content -->
+    <main class="py-8">
+
+
 <router-outlet></router-outlet>
+
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-4 mt-12">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2025 Portal de Reservas | Todos os direitos reservados</p>
+    </div>
+</footer>
+</div>
 
 
