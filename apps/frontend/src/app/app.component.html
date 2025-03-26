@@ -21,7 +21,7 @@
       
           <!-- Botão de Login -->
           <button pButton type="button" label="Login"    class="p-button-sm p-button-outlined text-white mr-2"></button>
-          <button pButton type="button" label="Cadastro" routerLink="/cadastro-usuario" class="p-button-sm p-button-outlined text-white mr-2"></button>
+          <button pButton type="button" label="Cadastro" routerLink="/cad-usuario" class="p-button-sm p-button-outlined text-white mr-2"></button>
         </div>
       
         <!-- Menu Responsivo (Dropdown) -->
@@ -36,12 +36,9 @@
 
     <!-- Main Content -->
     <main class="py-8">
-
-
-<router-outlet></router-outlet>
-
-
-</main>
+      <router-outlet></router-outlet>
+      <p-toast position="top-right"></p-toast>      
+    </main>
 
 <!-- Footer -->
 <footer class="bg-gray-800 text-white py-4 mt-12">

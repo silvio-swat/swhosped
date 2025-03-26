@@ -7,6 +7,7 @@ import { ClienteService } from './cliente.service';
 @Module({
   imports: [MikroOrmModule.forFeature([Cliente])],  
   controllers: [ClienteController],
-  providers: [ClienteService]
+  providers: [ClienteService],
+  exports: [ClienteService]
 })
 export class ClienteModule {}

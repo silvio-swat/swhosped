@@ -1,27 +1,101 @@
-<div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
-    <h2 class="text-xl font-bold text-center mb-4">Cadastre-se</h2>
-  
-    <form [formGroup]="usuarioForm" (ngSubmit)="cadastrar()">
-      <div class="mb-4">
-        <label [attr.for]="nomeCompleto"  class="block text-sm font-medium mb-1">Nome Completo</label>
-        <input pInputText formControlName="nomeCompleto" class="w-full p-2 border rounded-lg">
+<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+  <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Cadastro de Cliente - Dados Básicos</h3>
+    
+    <form (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Nome Completo -->
+      <div>
+        <label for="nomeCompleto" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+        <input 
+          type="text"
+          id="nomeCompleto" 
+          pInputText
+          [(ngModel)]="user().nomeCompleto" 
+          (input)="onInputChange($event, 'nomeCompleto')" 
+          name="nomeCompleto"
+          class="p-inputtext p-2 w-full border rounded-md"
+          required 
+        />
       </div>
-  
-      <div class="mb-4">
-        <label [attr.for]="email" class="block text-sm font-medium mb-1">E-mail</label>
-        <input pInputText formControlName="email" type="email" class="w-full p-2 border rounded-lg">
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input 
+          type="email"
+          id="email" 
+          pInputText
+          [(ngModel)]="user().email" 
+          (input)="onInputChange($event, 'email')" 
+          name="email"
+          class="p-inputtext p-2 w-full border rounded-md"
+          required 
+        />
       </div>
-  
-      <div class="mb-4">
-        <label [attr.for]="telefone" class="block text-sm font-medium mb-1">Telefone</label>
-        <input pInputText formControlName="telefone" type="tel" class="w-full p-2 border rounded-lg">
+<!-- Senha -->
+<div>
+  <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+  <input 
+    type="password"
+    id="senha"
+    pInputText
+    [(ngModel)]="user().senha"
+    name="senha"
+    class="p-inputtext p-2 w-full border rounded-md"
+    required
+  />
+</div>
+
+<!-- Confirmar Senha -->
+<div>
+  <label for="confirmarSenha" class="block text-sm font-medium text-gray-700">Confirmar Senha</label>
+  <input 
+    type="password"
+    id="confirmarSenha"
+    pInputText
+    [(ngModel)]="user().confirmarSenha"
+    name="confirmarSenha"
+    class="p-inputtext p-2 w-full border rounded-md"
+    required
+  />
+</div>
+
+      <!-- Telefone -->
+      <div>
+        <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+        <p-inputMask 
+          id="telefone" 
+          name="telefone"
+          mask="(99) 99999-9999" 
+          [(ngModel)]="user().telefone"
+          (onInput)="onInputChange($event, 'telefone')"
+          [styleClass]="'w-full p-2 border border-gray-300 rounded-md'"
+          required>
+        </p-inputMask>
       </div>
-  
-      <div class="mb-4">
-        <label [attr.for]="cpf" class="block text-sm font-medium mb-1">CPF</label>
-        <input pInputText formControlName="cpf" class="w-full p-2 border rounded-lg">
+      <!-- CPF -->
+      <div>
+        <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+        <p-inputMask  
+          id="cpf" 
+          name="cpf"
+          mask="999.999.999-99" 
+          [(ngModel)]="user().cpf"
+          (onInput)="onInputChange($event, 'cpf')"
+          [styleClass]="'w-full p-2 border border-gray-300 rounded-md'"
+          required>
+        </p-inputMask>
       </div>
-  
-      <button pButton type="submit" label="Cadastrar" class="w-full bg-blue-500 text-white p-2 rounded-lg"></button>
+
+      <!-- Botão de Envio -->
+      <div>
+        <button 
+          pButton 
+          type="submit" 
+          label="Cadastrar" 
+          class="p-button-lg w-full"
+        ></button>
+      </div>
     </form>
   </div>
+</div>

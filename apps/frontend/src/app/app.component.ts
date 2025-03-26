@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
 import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
-  imports: [NxWelcomeComponent, RouterModule, ButtonModule],
+  imports: [RouterModule, ButtonModule, CommonModule, ToastModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
