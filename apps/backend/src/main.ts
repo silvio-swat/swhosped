@@ -7,7 +7,6 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { PortugueseValidationPipe } from './common/validation-pipe.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +26,22 @@ async function bootstrap() {
 
   // Configuração do CORS
   app.enableCors({
-    origin: 'http://localhost:4200', // URL exata do frontend
+    //origin: 'http://localhost:4200', // URL exata do frontend
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://192.168.68.74:4200',
+        'http://192.168.68.52:4200',        
+        'http://192.168.68.73:4200',
+        'http://127.0.0.1:4200',
+        'http://localhost:4200'
+      ];
+  
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Permite a requisição
+      } else {
+        callback(new Error('Acesso bloqueado por CORS')); // Bloqueia
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Todos métodos necessários
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -38,9 +52,9 @@ async function bootstrap() {
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
   );
 
-  const server = app.getHttpServer();
-  const router = server._events.request._router;
-  console.log(router.stack.map(layer => layer?.route?.path));  
+  // const server = app.getHttpServer();
+  // const router = server._events.request._router;
+  // console.log(router.stack.map(layer => layer?.route?.path));  
 }
 
 bootstrap();

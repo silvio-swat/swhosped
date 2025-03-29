@@ -1,0 +1,15 @@
+img {
+    background-color: #f3f4f6; /* Cor de fundo enquanto carrega */
+    min-height: 96px; /* Altura mínima igual à sua classe h-24 */
+}
+
+/* Adicione ao seu arquivo de estilos */
+.cep-container {
+    position: relative;
+}
+  
+.cep-loading {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+}  

@@ -40,10 +40,10 @@ export class Acomodacao {
   cep!: string;
 
   @Property()
-  latitude!: number;
+  latitude!: string;
 
   @Property()
-  longitude!: number;
+  longitude!: string;
 
   @Property()
   precoPorNoite!: number;
@@ -53,6 +53,10 @@ export class Acomodacao {
 
   @OneToMany(() => Reserva, reserva => reserva.acomodacao)
   reservas = new Collection<Reserva>(this);
+
+  // Na entidade Acomodacao:
+  @Property({ type: 'json', nullable: true })
+  imagens?: string[];  // Armazena paths como array  
 }
 
 export enum TipoAcomodacao {

@@ -1,1 +1,326 @@
-<p>cad-acomodacao works!</p>
+<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Cadastro de Acomodação</h3>
+      
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Tipo de Acomodação -->
+        <div>
+          <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de Acomodação</label>
+          <p-dropdown 
+            id="tipo"
+            [options]="tiposAcomodacao"
+            [(ngModel)]="acomodacao().tipo"
+            name="tipo"
+            optionLabel="label"
+            optionValue="value"
+            [styleClass]="'w-full'"
+            required
+          ></p-dropdown>
+        </div>
+  
+        <!-- Descrição -->
+        <div>
+          <label for="descricao" class="block text-sm font-medium text-gray-700">Descrição</label>
+          <textarea
+            id="descricao" 
+            pInputTextarea
+            [(ngModel)]="acomodacao().descricao" 
+            name="descricao"
+            rows="3"
+            class="w-full border rounded-md"
+            required
+          ></textarea>
+        </div>
+  
+        <!-- Capacidade -->
+        <div>
+          <label for="capacidade" class="block text-sm font-medium text-gray-700">Capacidade (pessoas)</label>
+          <p-inputNumber
+            id="capacidade"
+            [(ngModel)]="acomodacao().capacidade"
+            name="capacidade"
+            [min]="1"
+            [max]="20"
+            [showButtons]="true"
+            [styleClass]="'w-full'"
+            required
+          ></p-inputNumber>
+        </div>
+  
+        <!-- Endereço -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Tipo Logradouro -->
+          <div>
+            <label for="tipoLogradouro" class="block text-sm font-medium text-gray-700">Tipo Logradouro</label>
+            <p-dropdown 
+              id="tipoLogradouro"
+              [options]="tiposLogradouro"
+              [(ngModel)]="acomodacao().tipoLogradouro"
+              name="tipoLogradouro"
+              [styleClass]="'w-full'"
+              (onBlur)="buscarCoordenadas()"
+              required
+            ></p-dropdown>
+          </div>
+  
+          <!-- Logradouro -->
+          <div>
+            <label for="logradouro" class="block text-sm font-medium text-gray-700">Logradouro</label>
+            <input 
+              type="text"
+              id="logradouro" 
+              pInputText
+              [(ngModel)]="acomodacao().logradouro" 
+              name="logradouro"
+              class="w-full border rounded-md"
+              (blur)="buscarCoordenadas()"
+              required 
+            />
+          </div>
+  
+          <!-- Número -->
+          <div>
+            <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
+            <input 
+              type="text"
+              id="numero" 
+              pInputText
+              [(ngModel)]="acomodacao().numero" 
+              name="numero"
+              class="w-full border rounded-md"
+              (blur)="buscarCoordenadas()"
+              required 
+            />
+          </div>
+  
+          <!-- Complemento -->
+          <div>
+            <label for="complemento" class="block text-sm font-medium text-gray-700">Complemento (opcional)</label>
+            <input 
+              type="text"
+              id="complemento" 
+              pInputText
+              [(ngModel)]="acomodacao().complemento" 
+              name="complemento"
+              class="w-full border rounded-md"
+            />
+          </div>
+  
+          <!-- Bairro -->
+          <div>
+            <label for="bairro" class="block text-sm font-medium text-gray-700">Bairro</label>
+            <input 
+              type="text"
+              id="bairro" 
+              pInputText
+              [(ngModel)]="acomodacao().bairro" 
+              name="bairro"
+              class="w-full border rounded-md"
+              (blur)="buscarCoordenadas()"
+              required 
+            />
+          </div>
+  
+          <!-- Cidade -->
+          <div>
+            <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade</label>
+            <input 
+              type="text"
+              id="cidade" 
+              pInputText
+              [(ngModel)]="acomodacao().cidade" 
+              name="cidade"
+              class="w-full border rounded-md"
+              (blur)="buscarCoordenadas()"
+              required 
+            />
+          </div>
+  
+          <!-- Estado -->
+          <div>
+            <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
+            <p-dropdown 
+              id="estado"
+              [options]="estadosBrasil"
+              [(ngModel)]="acomodacao().estado"
+              name="estado"
+              [styleClass]="'w-full'"
+              (onBlur)="buscarCoordenadas()"
+              required
+            ></p-dropdown>
+          </div>
+  
+          <!-- CEP -->
+          <div>
+            <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
+            <p-inputMask 
+            id="cep"
+            name="cep"
+            mask="99999-999"
+            [(ngModel)]="acomodacao().cep"
+            (onComplete)="buscarEnderecoPorCep()"
+            [styleClass]="'w-full border rounded-md'"
+            (onBlur)="buscarCoordenadas()"
+            [disabled]="carregandoEndereco()"
+            required
+          ></p-inputMask>
+          @if (carregandoEndereco()) {
+            <span class="ml-2">
+              <i class="pi pi-spinner pi-spin"></i> Buscando...
+            </span>
+          }          
+
+          </div>
+        </div>
+  
+        <!-- Coordenadas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Latitude -->
+          <div>
+            <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
+            <p-inputNumber
+              id="latitude"
+              [(ngModel)]="acomodacao().latitude"
+              name="latitude"
+              [min]="-90"
+              [max]="90"
+              [step]="0.000001"
+              [useGrouping]="false"
+              [styleClass]="'w-full'"
+              [disabled]=true
+              required
+            ></p-inputNumber>
+          </div>
+          <!-- Longitude -->          
+          <div>
+            <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
+            <p-inputNumber
+              id="longitude"
+              [(ngModel)]="acomodacao().longitude"
+              name="longitude"
+              [min]="-180"
+              [max]="180"
+              [step]="0.000001"
+              [useGrouping]="false"
+              [styleClass]="'w-full'"
+              [disabled]=true              
+              required
+            ></p-inputNumber>
+          </div>
+          <!-- <button 
+            type="button" 
+            (click)="buscarCoordenadas()"
+            [disabled]="carregandoCoordenadas() || campoEnderecoIncompleto()"
+            class="flex items-center gap-2 p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          > -->
+          @if(carregandoCoordenadas()){
+            <div class="mt-2 text-sm text-blue-600">
+              Buscando localização exata...
+            </div>
+          }          
+          <!-- </button> -->
+
+  
+          <!-- Preço por Noite -->
+          <div>
+            <label for="precoPorNoite" class="block text-sm font-medium text-gray-700">Preço por Noite (R$)</label>
+            <p-inputNumber
+              id="precoPorNoite"
+              [(ngModel)]="acomodacao().precoPorNoite"
+              name="precoPorNoite"
+              [min]="0"
+              [max]="10000"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [styleClass]="'w-full'"
+              required
+            ></p-inputNumber>
+          </div>
+        </div>
+  
+        <!-- Status -->
+        <div>
+          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+          <p-dropdown 
+            id="status"
+            [options]="statusAcomodacao"
+            [(ngModel)]="acomodacao().status"
+            name="status"
+            optionLabel="label"
+            optionValue="value"
+            [styleClass]="'w-full'"
+            required
+          ></p-dropdown>
+        </div>
+
+        <!-- Adicione isso antes do botão de submit -->
+        <div class="mb-4">
+          <label for="imagens" class="block text-sm font-medium text-gray-700 mb-2">Imagens da Acomodação</label>
+          <!-- <p-fileUpload 
+          name="imagens"
+          [multiple]="true"
+          accept="image/*"
+          [maxFileSize]="1000000"
+          (onSelect)="handleFileSelect($event)"
+          (onRemove)="onRemove($event)"
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          chooseLabel="Selecionar Fotos"
+          cancelLabel="Cancelar"
+          class="w-full">
+        </p-fileUpload>           -->
+
+        <p-fileUpload 
+          #fileUpload
+          name="imagens"
+          [multiple]="true"
+          accept="image/*"
+          [maxFileSize]="1000000"
+          (onSelect)="handleFileSelect($event)"
+          (onRemove)="onRemove($event.file)"
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          chooseLabel="Selecionar Fotos"
+          cancelLabel="Cancelar"
+          uploadLabel="Enviar"
+          class="w-full">
+        </p-fileUpload>        
+
+        @if (acomodacao().imagens?.length) {        
+          <div class="grid grid-cols-3 gap-2 mt-4">
+            @for (img of acomodacao().imagens; track img.name; let i = $index) {
+              <div class="relative">
+                @if(img) {
+                  <div>
+                    <img 
+                      [src]="getPreview(img)" 
+                      [alt]="'Imagem ' + (i + 1)" 
+                      class="w-full h-24 object-cover rounded">
+                    <button 
+                      type="button" 
+                      (click)="onRemove(img)"
+                      aria-label="Remover imagem"
+                      class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                      ×
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+        </div>        
+  
+        <!-- Botão de Envio -->
+        <div>
+          <button 
+            pButton 
+            type="submit" 
+            label="Cadastrar Acomodação" 
+            class="w-full p-button-lg"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </div>

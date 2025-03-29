@@ -130,21 +130,23 @@
         },
         "latitude": {
           "name": "latitude",
-          "type": "int",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "length": 255,
+          "mappedType": "string"
         },
         "longitude": {
           "name": "longitude",
-          "type": "int",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "length": 255,
+          "mappedType": "string"
         },
         "preco_por_noite": {
           "name": "preco_por_noite",
@@ -168,6 +170,15 @@
             "Em Manutenção"
           ],
           "mappedType": "enum"
+        },
+        "imagens": {
+          "name": "imagens",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "acomodacao",

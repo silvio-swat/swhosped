@@ -1,27 +1,40 @@
 import { Component, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { InputMaskModule } from 'primeng/inputmask';
-import { FormsModule } from '@angular/forms'; // Importe o FormsModule
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { NotificationService  } from '../../../core/notifications/notification.service';
 import { UserClientService  } from './../../services/user-client.service';
 import { CreateUserClientDto } from './../../interfaces/user-client.interface';
-// import { OnInit, ChangeDetectorRef } from '@angular/core';
 
+/**
+ * Componente responsável pelo cadastro de usuários e clientes
+ * 
+ * @remarks
+ * Este componente implementa um formulário de cadastro com validações básicas
+ * e integração com o serviço de usuários.
+ */
 @Component({
   standalone: true,  
-  imports: [CardModule,
+  imports: [
+    CardModule,
     FormsModule, // Adicione o FormsModule aqui
     InputMaskModule,
     ButtonModule,
-    CommonModule],  
+    CommonModule
+  ],  
   selector: 'app-cadastro-usuario',
   templateUrl: './cadastro-usuario.component.html',
   styleUrls: ['./cadastro-usuario.component.css']
 })
 export class CadastroUsuarioComponent {
-  // Usando Signals para gerenciar o estado do formulário
+  /**
+   * Estado do formulário usando Signals
+   * 
+   * @remarks
+   * Armazena todos os campos do formulário de cadastro
+   */
   user = signal({
     nomeCompleto: '', // Pode ser o email
     senha: '',
@@ -36,7 +49,15 @@ export class CadastroUsuarioComponent {
     private userClientService: UserClientService    
   ) {}
 
-  // Função para lidar com o evento de input
+  /**
+   * Manipulador de eventos de input
+   * 
+   * @param event - Evento DOM do input
+   * @param field - Campo do formulário que está sendo alterado
+   * 
+   * @remarks
+   * Atualiza o valor do campo específico no estado do formulário
+   */
   onInputChange(event: Event, field: 'nomeCompleto' | 'email' | 'telefone' | 'cpf') {
     const target = event.target as HTMLInputElement;
     if (target) {
@@ -44,16 +65,26 @@ export class CadastroUsuarioComponent {
     }
   }  
 
-  // Função para atualizar os valores do formulário
+  /**
+   * Atualiza um campo específico no estado do formulário
+   * 
+   * @param field - Nome do campo a ser atualizado
+   * @param value - Novo valor para o campo
+   */
   updateField(field: 'nomeCompleto' | 'email' | 'telefone' | 'cpf', value: string) {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
-  // Função para enviar os dados
+  /**
+   * Submete o formulário de cadastro
+   * 
+   * @remarks
+   * Valida os dados antes de enviar para o servidor e trata a resposta
+   */
   onSubmit() {
-    // if (!this.isFormValid()) {
-    //   return;
-    // }
+    if (!this.isFormValid()) {
+      return;
+    }
 
     const userClientData: CreateUserClientDto = {
       nomeUsuario: this.user().email, // Ou um username separado
@@ -81,10 +112,16 @@ export class CadastroUsuarioComponent {
           console.error('Erro ao cadastrar usuário', error);
         }
     });    
-    // this.http.post('http://localhost:3000/api/usuarios', usuarioData, { headers })
-
   }
 
+  /**
+   * Valida os dados do formulário
+   * 
+   * @returns boolean - True se o formulário é válido, False caso contrário
+   * 
+   * @remarks
+   * Verifica se a senha foi preenchida e se as senhas coincidem
+   */
   private isFormValid(): boolean {
     const form = this.user();
     if (!form.senha) {
@@ -98,35 +135,4 @@ export class CadastroUsuarioComponent {
     }
     return true;
   }
-
 }
-
-
-
-// import { Component } from '@angular/core';
-// import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-cadastro-usuario',
-//   imports: [],
-//   templateUrl: './cadastro-usuario.component.html',
-//   styleUrl: './cadastro-usuario.component.css'
-// })
-// export class CadastroUsuarioComponent {
-//   usuarioForm: FormGroup;
-
-//   constructor(private fb: FormBuilder) {
-//     this.usuarioForm = this.fb.group({
-//       nomeCompleto: ['', [Validators.required, Validators.minLength(3)]],
-//       email: ['', [Validators.required, Validators.email]],
-//       telefone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-//       cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-//     });
-//   }
-
-//   cadastrar() {
-//     if (this.usuarioForm.valid) {
-//       console.log(this.usuarioForm.value); // Substituir por requisição HTTP
-//     }
-//   }
-// }
