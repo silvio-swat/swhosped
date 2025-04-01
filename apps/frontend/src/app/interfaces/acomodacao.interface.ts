@@ -46,6 +46,8 @@ export interface CreateAcomodacaoDto {
     checkin?: string;       // Data de check-in (Formato: YYYY-MM-DD)
     checkout?: string;      // Data de check-out (Formato: YYYY-MM-DD)
     capacidade?: number;    // Quantidade de pessoas que a acomodação suporta
+    page?: number;
+    limit?: number;
   }
   
   export enum TipoAcomodacao {
@@ -60,5 +62,11 @@ export interface CreateAcomodacaoDto {
     EM_MANUTENCAO = 'Em Manutenção',
   }
 
+  export interface PaginatedAcomodacaoResult {
+    data: AcomodacaoResponse[];
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+  }  
 
 

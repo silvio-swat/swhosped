@@ -435,11 +435,44 @@
             "Cancelada"
           ],
           "mappedType": "enum"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "'now()'",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
         }
       },
       "name": "reserva",
       "schema": "public",
       "indexes": [
+        {
+          "keyName": "reserva_acomodacao_id_data_check_in_data_check_out_unique",
+          "columnNames": [
+            "acomodacao_id",
+            "data_check_in",
+            "data_check_out"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
         {
           "keyName": "reserva_pkey",
           "columnNames": [

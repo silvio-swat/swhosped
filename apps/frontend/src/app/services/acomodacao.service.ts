@@ -6,7 +6,8 @@ import {
   CreateAcomodacaoDto, 
   AcomodacaoResponse,
   TipoAcomodacao,
-  StatusAcomodacao
+  StatusAcomodacao,
+  PaginatedAcomodacaoResult
 } from '../interfaces/acomodacao.interface';
 import { apiLinks } from '../shared/environment';
 
@@ -20,14 +21,14 @@ export class AcomodacaoService {
   constructor(private http: HttpClient) {}
 
   createAcomodacao(formData: FormData): Observable<AcomodacaoResponse> {
-  // Debug: Mostra todo o conteúdo do FormData
-  formData.forEach((value, key) => {
-    console.log(`Chave: ${key}`, `Valor: ${value}`, `Tipo: ${typeof value}`);
-  });
+    // Debug: Mostra todo o conteúdo do FormData
+    formData.forEach((value, key) => {
+      console.log(`Chave: ${key}`, `Valor: ${value}`, `Tipo: ${typeof value}`);
+    });
     return this.http.post<AcomodacaoResponse>(this.apiUrl, formData);
   }
 
-  buscarAcomodacoesComFiltros(filtros: any): Observable<AcomodacaoResponse[]> {
+  buscarAcomodacoesComFiltros(filtros: any): Observable<PaginatedAcomodacaoResult> {
     let params = new HttpParams();
     Object.keys(filtros).forEach((chave) => {
       if (filtros[chave]) {
@@ -35,7 +36,7 @@ export class AcomodacaoService {
       }
     });
 
-    return this.http.get<AcomodacaoResponse[]>(this.apiUrl, { params });
+    return this.http.get<PaginatedAcomodacaoResult>(this.apiUrl, { params });
   }  
 
   getAcomodacaoById(id: number): Observable<AcomodacaoResponse> {
@@ -58,6 +59,15 @@ export class AcomodacaoService {
     return this.http.get<AcomodacaoResponse[]>(this.apiUrl);
   }
 
+  // Novo método para buscar acomodações disponíveis
+  buscarDisponiveis(): Observable<AcomodacaoResponse[]> {
+    const params = new HttpParams()
+      .set('status', StatusAcomodacao.DISPONIVEL)
+      .set('sort', 'precoPorNoite,asc'); // Ordena por preço crescente
+
+    return this.http.get<AcomodacaoResponse[]>(this.apiUrl, { params });
+  }
+
   // Métodos para obter os enums podem ser úteis para os dropdowns
   getTiposAcomodacao(): TipoAcomodacao[] {
     return Object.values(TipoAcomodacao);
@@ -66,7 +76,4 @@ export class AcomodacaoService {
   getStatusAcomodacao(): StatusAcomodacao[] {
     return Object.values(StatusAcomodacao);
   }
-
-
-
 }

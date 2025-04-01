@@ -1,0 +1,12 @@
+<div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-semibold text-gray-800">Suas Reservas</h2>
+        <p class="text-lg text-gray-600">Busque suas reservas por meio do CPF, E-mail ou Telefone</p>
+    </div>            
+    
+    <!-- Search Filters Section -->            
+    <app-reserva-cliente-pesquisa (filtrosAlterados)="aplicarFiltros($event)"></app-reserva-cliente-pesquisa>          
+    
+    <!-- Reserva List -->
+    <app-reserva-cliente-list [reservas]="reservaFiltradas" [filtro]="filtrosAtuais"></app-reserva-cliente-list>  
+</div>            

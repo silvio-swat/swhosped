@@ -1,0 +1,234 @@
+
+<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+  <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Reserva de Acomodação</h3>
+    <!-- Seção Superior: Carrossel e Mapa -->
+    <!-- Card de Informações da Acomodação -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+      <div class="p-6">
+        <h4 class="text-xl font-semibold text-gray-800">
+          {{ acomodacaoSelecionada.cidade + ' | ' + acomodacaoSelecionada.estado }}
+        </h4>
+        <p class="text-gray-600 mt-2">{{ acomodacaoSelecionada.descricao }}</p>
+        <p class="text-lg text-blue-600 mt-4">
+          R$ {{ acomodacaoSelecionada.precoPorNoite | number:'1.2-2' }} / noite
+        </p>
+      </div>
+    </div> 
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 min-h-[300px]">
+      <!-- Carrossel de Fotos -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden relative h-full">
+        @if (countImagens) {
+          <div class="relative h-full">
+            <!-- Imagens -->
+            @for (imagem of acomodacaoSelecionada.imagens; track $index) {
+              <div class="h-full w-full absolute inset-0 transition-opacity duration-300"
+                  [class.opacity-0]="$index !== activeImageIndex"
+                  [class.opacity-100]="$index === activeImageIndex">
+                <img 
+                  [src]="getImageUrl(imagem)"
+                  alt="Foto da acomodação"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            }
+            
+            <!-- Controles -->
+            <div class="absolute inset-0 flex items-center justify-between p-4">
+              <button 
+                (click)="prevImage()"
+                class="bg-white/50 p-2 rounded-full hover:bg-white/80 transition-colors"
+              >
+                &lt;
+              </button>
+              <button 
+                (click)="nextImage()"
+                class="bg-white/50 p-2 rounded-full hover:bg-white/80 transition-colors"
+              >
+                &gt;
+              </button>
+            </div>
+            
+            <!-- Indicadores -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              @for (imagem of acomodacaoSelecionada.imagens; track $index) {
+                <button 
+                  class="w-3 h-3 rounded-full"
+                  [class.bg-blue-500]="$index === activeImageIndex"
+                  [class.bg-gray-300]="$index !== activeImageIndex"
+                  (click)="activeImageIndex = $index"
+                ></button>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="h-full bg-gray-100 flex items-center justify-center text-gray-500">
+            Nenhuma foto disponível
+          </div>
+        }
+      </div>
+
+      <!-- Espaço para o Mapa -->
+      <div class="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 h-full flex items-center justify-center">
+        <span class="text-gray-500">Espaço reservado para mapa</span>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Reserva de Acomodação</h3>
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Datas da Reserva -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Data de Check-in -->
+          <div>
+            <label for="dataCheckIn" class="block text-sm font-medium text-gray-700">Data de Check-in</label>
+            <p-calendar 
+              id="dataCheckIn"
+              [(ngModel)]="reserva().dataCheckIn"
+              name="dataCheckIn"
+              [minDate]="minDate"
+              [maxDate]="maxDate"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              [styleClass]="'w-full'"
+              (onSelect)="calcularValorTotal()"
+              required
+            ></p-calendar>
+          </div>
+
+          <!-- Data de Check-out -->
+          <div>
+            <label for="dataCheckOut" class="block text-sm font-medium text-gray-700">Data de Check-out</label>
+            <p-calendar 
+              id="dataCheckOut"
+              [(ngModel)]="reserva().dataCheckOut"
+              name="dataCheckOut"
+              [minDate]="reserva().dataCheckIn || minDate"
+              [maxDate]="maxDate"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              [styleClass]="'w-full'"
+              (onSelect)="calcularValorTotal()"
+              required
+            ></p-calendar>
+          </div>
+        </div>
+
+        <!-- Dados Pessoais -->
+        <div class="border-t pt-4">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">Dados Pessoais</h4>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Nome Completo -->
+            <div>
+              <label for="nomeCompleto" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+              <input 
+                type="text"
+                id="nomeCompleto" 
+                pInputText
+                [(ngModel)]="reserva().cliente.nomeCompleto"
+                name="nomeCompleto"
+                class="w-full border rounded-md"
+                required 
+              />
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+              <input 
+                type="email"
+                id="email" 
+                pInputText
+                [(ngModel)]="reserva().cliente.email"
+                name="email"
+                class="w-full border rounded-md"
+                required 
+              />
+            </div>
+
+            <!-- Telefone -->
+            <div>
+              <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+              <p-inputMask 
+                id="telefone"
+                mask="(99) 99999-9999"
+                [(ngModel)]="reserva().cliente.telefone"
+                name="telefone"
+                [styleClass]="'w-full border rounded-md'"
+                required
+              ></p-inputMask>
+            </div>
+
+            <!-- CPF -->
+            <div>
+              <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+              <p-inputMask 
+                id="cpf"
+                mask="999.999.999-99"
+                [(ngModel)]="reserva().cliente.cpf"
+                name="cpf"
+                [styleClass]="'w-full border rounded-md'"
+                required
+              ></p-inputMask>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo da Reserva -->
+        <div class="border-t pt-4">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">Resumo da Reserva</h4>
+          
+          <div class="bg-gray-50 p-4 rounded-md">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+              <div>
+                <p class="text-gray-700">Período:</p>
+                @if (reserva().dataCheckIn && reserva().dataCheckOut) {
+                  <p class="font-medium">
+                    {{ reserva().dataCheckIn | date:'dd/MM/yyyy' }} 
+                    a 
+                    {{ reserva().dataCheckOut | date:'dd/MM/yyyy' }}
+                  </p>
+                } @else {
+                  <p class="text-gray-500">Selecione as datas</p>
+                }
+              </div>
+              <div>
+                <p class="text-gray-700">Noites:</p>
+                <p class="font-medium">{{ calcularNoites() }}</p>
+              </div>
+            </div>
+
+            <div class="border-t pt-2 mt-2">
+              <div class="flex justify-between">
+                <p class="text-gray-700">Valor total:</p>
+                <p class="text-xl font-semibold text-blue-600">
+                  R$ {{ reserva().valorTotal | number:'1.2-2' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão de Envio -->
+        <div class="flex justify-end gap-4">
+          <button 
+            pButton 
+            type="button" 
+            label="Cancelar" 
+            class="p-button-outlined p-button-secondary"
+            (click)="cancelar()"
+          ></button>
+          
+          <button 
+            pButton 
+            type="submit" 
+            label="Confirmar Reserva" 
+            class="p-button-success"
+            [disabled]="!formValido()"
+          ></button>
+        </div>
+      </form>
+    </div>
+</div>

@@ -1,9 +1,9 @@
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 import { Logger } from '@nestjs/common';
-import { Cliente } from './src/cliente/cliente.entity';
-import { Usuario } from './src/usuario/entities/usuario.entity';
-import { Acomodacao } from './src/acomodacao/entities/acomodacao.entity';
-import { Reserva } from './src/reserva/entities/reserva.entity';
+import { Cliente } from './src/resources/cliente/cliente.entity';
+import { Usuario } from './src/resources/usuario/entities/usuario.entity';
+import { Acomodacao } from './src/resources/acomodacao/entities/acomodacao.entity';
+import { Reserva } from './src/resources/reserva/entities/reserva.entity';
 import { defineConfig } from '@mikro-orm/postgresql';
 
 export default defineConfig({
@@ -16,4 +16,8 @@ export default defineConfig({
   debug: true,
   highlighter: new SqlHighlighter(),
   logger: (message) => Logger.log(message),
+  seeder: {
+    path: './src/database/seeders', // Caminho para a pasta onde os seeders estão localizados
+    defaultSeeder: 'AcomodacaoSeeder', // Nome da classe do seeder padrão
+  },
 });

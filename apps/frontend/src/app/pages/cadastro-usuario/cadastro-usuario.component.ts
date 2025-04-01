@@ -99,7 +99,7 @@ export class CadastroUsuarioComponent {
     this.userClientService.createUserAndClient(userClientData).subscribe({
         next: (response) => {
           console.log('Usuário cadastrado com sucesso!', response);
-          alert('Cadastro realizado com sucesso!');
+          this.notify.notify('success', 'Cadastro realizado com sucesso!');
         },
         error: (error) => {
           //Exibe todas as mensagens de erro de validação do Backend

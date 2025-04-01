@@ -15,7 +15,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Remove campos não declarados no DTO
-      forbidNonWhitelisted: true, // Rejeita requisições com campos extras
+      forbidNonWhitelisted: false, // Rejeita requisições com campos extras
       transform: true, // Converte tipos automaticamente
     })
   );
@@ -29,9 +29,10 @@ async function bootstrap() {
     //origin: 'http://localhost:4200', // URL exata do frontend
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'http://192.168.68.74:4200',
-        'http://192.168.68.52:4200',        
         'http://192.168.68.73:4200',
+        'http://192.168.68.74:4200',
+        'http://192.168.68.75:4200',
+        'http://192.168.68.52:4200',        
         'http://127.0.0.1:4200',
         'http://localhost:4200'
       ];
@@ -42,7 +43,7 @@ async function bootstrap() {
         callback(new Error('Acesso bloqueado por CORS')); // Bloqueia
       }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Todos métodos necessários
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH','OPTIONS'], // Todos métodos necessários
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class TipoLogradouroService {
   private tiposPadrao = [
-    'Rua', 'Avenida', 'Travessa', 'Alameda', 'Praça', 'Rodovia', 'Estrada'
+    'Rua', 'Avenida', 'Travessa', 'Alameda', 'Praça', 'Rodovia', 'Estrada', 'Marginal'
   ];
 
   private abreviacoes: Record<string, string> = {

@@ -1,0 +1,112 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { AcomodacaoService } from '../../../services/acomodacao.service';
+import { AcomodacaoResponse, FiltroAcomodacao, PaginatedAcomodacaoResult } from '../../../interfaces/acomodacao.interface';
+import { BackendService } from '../../../services/backend.service';
+import { Router } from '@angular/router';
+
+
+@Component({
+  selector: 'app-acomodacao-list',
+  imports: [ButtonModule, CommonModule],
+  templateUrl: './acomodacao-list.component.html',
+  standalone: true,
+})
+export class AcomodacaoListComponent implements OnInit{
+  @Input() filtro: FiltroAcomodacao = {};
+  @Input() acomodacoes!: PaginatedAcomodacaoResult;
+  imgPath: string;
+  private router = inject(Router); // Injeção alternativa
+
+
+
+  constructor(private acomodacaoService: AcomodacaoService,
+              private backendSrv: BackendService
+  ) {
+    this.imgPath = this.backendSrv.getServerUrl();
+  }
+
+  ngOnInit(): void {
+    this.buscarAcomodacoes(this.filtro, 0);
+  }
+
+  buscarAcomodacoes(filtros: FiltroAcomodacao, currentPage: number): void {
+    // Altera a página atual e faz uma nova query
+    console.log('buscarAcomodacoes currentPage', currentPage);
+    console.log('buscarAcomodacoes filtros', filtros);
+    filtros.page = currentPage > 0 ? currentPage : filtros.page;
+
+    this.acomodacaoService.buscarAcomodacoesComFiltros(filtros).subscribe(
+      (resultado) => {
+        this.acomodacoes = resultado;
+      },
+      (erro) => {
+        console.error('Erro ao buscar acomodações:', erro);
+      }
+    );
+  }
+
+  // Navegar para a próxima página
+  proximaPagina(): void {
+    if (this.acomodacoes.currentPage < this.acomodacoes.totalPages) {
+      this.acomodacoes.currentPage++;
+
+      console.log('teste current page', this.acomodacoes.currentPage );
+      console.log('teste current acomodacoes', this.acomodacoes);
+      this.buscarAcomodacoes(this.filtro, this.acomodacoes.currentPage);
+    }
+  }
+
+  // Navegar para a página anterior
+  paginaAnterior(): void {
+    if (this.acomodacoes.currentPage > 1) {
+      this.acomodacoes.currentPage--;
+      this.buscarAcomodacoes(this.filtro, this.acomodacoes.currentPage);
+    }
+  }
+
+  // TrackBy function to optimize *ngFor
+  trackById(index: number, item: AcomodacaoResponse): number {
+    return item.id;
+  }
+
+  trackByPage(index: number, page: number): number {
+    return page;
+  }  
+
+  // Retorna um array de números para iterar os botões de página
+  get pages(): number[] {
+    return Array.from({ length: this.acomodacoes.totalPages }, (_, i) => i + 1);
+  }  
+
+  mudarPagina(page: number): void {
+    if (page >= 1 && page <= this.acomodacoes.totalPages) {
+      this.buscarAcomodacoes(this.filtro, page);
+    }
+  }  
+
+  // Método para retornar a URL correta da imagem
+  getImageUrl(acomodacao: AcomodacaoResponse): string {
+    if (acomodacao.imagens && acomodacao.imagens.length > 0) {
+      const first = acomodacao.imagens[0];
+      // Verifica se a URL já é completa
+      if (first.startsWith('http://') || first.startsWith('https://')) {
+        return first;
+      } else {
+        return this.imgPath + first.replace('apps/backend', '');
+      }
+    }
+    return 'assets/imagem-padrao.jpg';
+  } 
+  
+  reservar(acomodacao: AcomodacaoResponse) {
+    console.log('Dados enviados:', acomodacao); // Verifique no console
+    this.router.navigate(['/reservar'], {
+      state: { 
+        acomodacaoSelecionada: acomodacao 
+      }
+    });
+  }
+}

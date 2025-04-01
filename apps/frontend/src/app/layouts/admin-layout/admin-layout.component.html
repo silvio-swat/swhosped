@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-gray-100">
+    <!-- Header Administrativo -->
+    <header class="bg-green-600 text-white py-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-semibold ml-2">Área Administrativa</h1>
+        <!-- Outros controles, como logout, configurações, etc. -->
+
+
+          <!-- Navegação -->
+          <nav class="hidden lg:flex space-x-4">
+            <ul class="flex space-x-4">
+              <li><a pRipple class="hover:text-black" routerLink="/">Home</a></li>
+              <li><a pRipple class="hover:text-black" routerLink="/reserva-cliente">Buscar Reservas</a></li>
+            </ul>
+          </nav>
+          <!-- Botão Menu Responsivo -->
+          <button class="lg:hidden" (click)="toggleMenu()">
+            <i class="pi pi-bars text-2xl"></i>
+          </button>       
+
+            <!-- Menu Responsivo (Dropdown) -->
+            <div *ngIf="menuAberto" class="lg:hidden bg-green-600 p-4">
+                <ul class="space-y-2">
+                <li><a pRipple class="block" routerLink="/">Home</a></li>
+                <li><a pRipple class="block" routerLink="/reserva-cliente">Buscar Reservas</a></li>
+                </ul>
+            </div>          
+
+      </div>
+
+
+
+    </header>
+  
+    <!-- Conteúdo Administrativo -->
+    <main class="py-8">
+      <router-outlet></router-outlet>
+      <p-toast position="top-right"></p-toast>
+    </main>
+  
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4 mt-12">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2025 Portal de Reservas | Todos os direitos reservados</p>
+      </div>
+    </footer>
+  </div>

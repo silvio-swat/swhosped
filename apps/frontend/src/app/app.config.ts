@@ -7,7 +7,10 @@ import { provideHttpClient } from '@angular/common/http'; // Importe o provideHt
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Importe FormsModule e ReactiveFormsModule
 import Aura from '@primeng/themes/aura';
 import { MessageService } from 'primeng/api'; // Adição única necessária
-import { SharedStandaloneModule } from './shared/shared-standalone.module'
+import { SharedStandaloneModule } from './shared/shared-standalone.module';
+import { APP_ROUTER_PROVIDERS } from './app.routes';
+import { provideNgxMask } from 'ngx-mask';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +22,13 @@ export const appConfig: ApplicationConfig = {
         preset: Aura
       }
     }),
+    APP_ROUTER_PROVIDERS,
     provideHttpClient(), // Adicione o HttpClient
-    importProvidersFrom(FormsModule, ReactiveFormsModule, MessageService, SharedStandaloneModule ) // Adicione FormsModule e ReactiveFormsModule
+    importProvidersFrom(FormsModule, 
+      ReactiveFormsModule, 
+      MessageService, 
+      SharedStandaloneModule
+     ), // Adicione FormsModule e ReactiveFormsModule
+    provideNgxMask()
   ],
 };
