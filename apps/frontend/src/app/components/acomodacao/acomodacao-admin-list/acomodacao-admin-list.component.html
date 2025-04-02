@@ -1,0 +1,69 @@
+<div class="mt-12 space-y-4">
+  @for (acomodacao of acomodacoes.data; track acomodacao.id) {
+    <div class="flex items-center bg-white shadow-lg rounded-lg overflow-hidden p-4">
+      <!-- Imagem da Acomodação -->
+      <img
+        [src]="getImageUrl(acomodacao)"
+        [alt]="acomodacao.cidade || 'Imagem da acomodação'"
+        class="w-24 h-24 object-cover flex-shrink-0 mr-4"
+      />
+      <!-- Detalhes da Acomodação -->
+      <div class="flex-grow">
+        <h4 class="text-lg font-semibold text-gray-800">
+          {{ acomodacao.cidade + ' | ' + acomodacao.estado }}
+        </h4>
+        <p class="text-gray-600 text-sm line-clamp-2">
+          {{ acomodacao.descricao }}
+        </p>
+        <p class="text-blue-600 mt-1">
+          R$ {{ acomodacao.precoPorNoite }} / noite
+        </p>
+      </div>
+      <!-- Botões de Ação -->
+      <div class="flex space-x-2">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-sm p-button-text p-button-primary"
+          (click)="editarAcomodacao(acomodacao)"
+        ></button>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-trash"
+          class="p-button-sm p-button-text p-button-danger"
+          (click)="deleteAcomodacao(acomodacao.id)"
+        ></button>
+      </div>
+    </div>
+  } @empty {
+    <p class="text-gray-600">Nenhuma acomodação disponível no momento.</p>
+  }
+</div>
+
+  <!-- Seção de Paginação -->
+  <div class="flex justify-center items-center mt-6">
+    <button pButton type="button" label="Anterior" (click)="paginaAnterior()"
+      [disabled]="acomodacoes.currentPage === 1" class="p-button-outlined mr-2"></button>
+    
+    <ng-container *ngFor="let page of pages; trackBy: trackByPage">
+      <button
+        pButton
+        type="button"
+        [label]="page.toString()"
+        (click)="mudarPagina(page)"
+        [ngClass]="{
+          'p-button-primary': acomodacoes.currentPage === page,
+          'p-button-outlined': acomodacoes.currentPage !== page
+        }"
+        class="mr-2">
+      </button>
+    </ng-container>
+    
+    <button pButton type="button" label="Próxima" (click)="proximaPagina()"
+      [disabled]="acomodacoes.currentPage === acomodacoes.totalPages" class="p-button-outlined">
+    </button>
+  </div>    
+
+  

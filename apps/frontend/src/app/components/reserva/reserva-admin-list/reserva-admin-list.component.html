@@ -1,0 +1,117 @@
+<div class="space-y-6 mt-2">
+    @if(reservas.data && reservas.data.length > 0) {
+        <div class="space-y-4">
+            @for (reserva of reservas.data; track reserva.id) {
+                <div class="flex flex-col md:flex-row items-start bg-white shadow-lg rounded-2xl p-4 border border-gray-200">
+                    <!-- Imagem da Acomodação -->
+                    <div class="w-24 h-24 flex-shrink-0 mr-4">
+                        <img
+                            [src]="getAcomodacaoImageUrl(reserva.acomodacao)"
+                            [alt]="reserva.acomodacao.descricao || 'Imagem da acomodação'"
+                            class="w-full h-full object-cover rounded-lg"
+                        />
+                    </div>
+                    
+                    <!-- Conteúdo -->
+                    <div class="flex flex-col w-full space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-gray-800">
+                                Reserva #{{ reserva.id }}
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <p-tag 
+                                    [value]="reserva.status" 
+                                    [severity]="reserva.status === 'Confirmada' ? 'success' : 'danger'"
+                                    class="text-sm"
+                                ></p-tag>
+                                @if (reserva.status === 'Confirmada') {
+                                    <button 
+                                        pButton 
+                                        type="button" 
+                                        icon="pi pi-times" 
+                                        label="Cancelar" 
+                                        class="p-button-sm p-button-danger text-xs"
+                                        (click)="confirmarCancelamento(reserva)"
+                                    ></button>
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                            <p>
+                                <span class="font-medium">Período:</span>
+                                {{ reserva.dataCheckIn | date:'dd/MM/yyyy' }} - {{ reserva.dataCheckOut | date:'dd/MM/yyyy' }}
+                            </p>
+                            <p>
+                                <span class="font-medium">Valor:</span> R$ {{ reserva.valorTotal | number:'1.2-2' }}
+                            </p>
+                            <p>
+                                <span class="font-medium">Cliente:</span> {{ reserva.cliente.nomeCompleto }}
+                            </p>
+                            <p>
+                                <span class="font-medium">Contato:</span>
+                                {{ reserva.cliente.telefone | telefone }} | {{ reserva.cliente.email }}
+                            </p>
+                        </div>
+                        
+                        <p class="text-sm text-gray-700">
+                            <span class="font-medium">Acomodação:</span> {{ reserva.acomodacao.tipo }} - {{ reserva.acomodacao.descricao }}
+                        </p>
+                        <p class="text-xs text-gray-700">
+                            <span class="font-medium">Endereço:</span>
+                            {{ reserva.acomodacao.tipoLogradouro }} {{ reserva.acomodacao.logradouro }},
+                            {{ reserva.acomodacao.numero }} - {{ reserva.acomodacao.bairro }}, {{ reserva.acomodacao.cidade }}/{{ reserva.acomodacao.estado }} 
+                            Cep: {{ reserva.acomodacao.cep }}
+                        </p>
+                        
+                        <p class="text-xs text-gray-700">
+                            <span class="font-medium">Diária:</span>
+                            R$ {{ reserva.acomodacao.precoPorNoite | number:'1.2-2' }}
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="text-center py-8 bg-white rounded-2xl shadow">
+            <i class="pi pi-info-circle text-4xl text-gray-400 mb-4"></i>
+            <p class="text-lg text-gray-600">Nenhuma reserva encontrada</p>
+        </div>
+    }
+  
+    <!-- Paginação -->
+    @if (reservas.totalPages > 1) {
+      <div class="flex justify-center items-center mt-6 bg-white p-4 rounded-2xl shadow">
+        <button 
+          pButton 
+          type="button" 
+          icon="pi pi-chevron-left" 
+          (click)="paginaAnterior()"
+          [disabled]="reservas.currentPage === 1" 
+          class="p-button-outlined mr-2"
+        ></button>
+        @for (page of pages; track page) {
+          <button
+            pButton
+            type="button"
+            [label]="page.toString()"
+            (click)="mudarPagina(page)"
+            [ngClass]="{
+              'p-button-primary': reservas.currentPage === page,
+              'p-button-outlined': reservas.currentPage !== page
+            }"
+            class="mx-1"
+          ></button>
+        }
+        <button 
+          pButton 
+          type="button" 
+          icon="pi pi-chevron-right" 
+          (click)="proximaPagina()"
+          [disabled]="reservas.currentPage === reservas.totalPages" 
+          class="p-button-outlined ml-2"
+        ></button>
+      </div>
+    }
+  </div>
+  <p-confirmdialog />

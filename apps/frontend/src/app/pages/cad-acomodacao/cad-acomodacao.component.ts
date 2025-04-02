@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, signal, OnDestroy, ViewChild } from '@angular/core';
+import { Component, signal, OnDestroy, ViewChild, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
@@ -10,9 +10,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { AcomodacaoService } from '../../services/acomodacao.service';
+import { AcomodacaoService, AcomodacaoStateService } from '../../services/acomodacao.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
-import { CreateAcomodacaoDto, TipoAcomodacao, StatusAcomodacao } from './../../interfaces/acomodacao.interface';
+import { CreateAcomodacaoDto, TipoAcomodacao, StatusAcomodacao, AcomodacaoResponse } from './../../interfaces/acomodacao.interface';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 import { ImageCacheService } from '../../services/image-cache.service';
@@ -21,8 +21,9 @@ import { Endereco } from '../../interfaces/endereco.interface';
 import { GeocodingService } from '../../services/geocoding.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { TipoLogradouroService } from '../../services/tipo-logradouro.service';
-import { race, timer, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { race, timer, of, Subject } from 'rxjs';
+import { catchError, finalize, map, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -44,10 +45,13 @@ import { catchError, finalize, map } from 'rxjs/operators';
   templateUrl: './cad-acomodacao.component.html',
   styleUrls: ['./cad-acomodacao.component.css']
 })
-export class CadAcomodacaoComponent implements OnDestroy {
+export class CadAcomodacaoComponent implements OnDestroy, OnInit {
 
+  private destroy$ = new Subject<void>(); // Adicione esta linha
   carregandoCoordenadas = signal(false);
-  tiposLogradouro: string[] = [];   
+  tiposLogradouro: string[] = []; 
+  modoEdicao     = false; 
+  idAcomodacao   = 0;
   // Usando Signals para gerenciar o estado do formulário
   acomodacao = signal<CreateAcomodacaoDto>({
     tipo: TipoAcomodacao.CASA,
@@ -86,6 +90,8 @@ export class CadAcomodacaoComponent implements OnDestroy {
     { label: 'Reservado', value: StatusAcomodacao.RESERVADO },
     { label: 'Em Manutenção', value: StatusAcomodacao.EM_MANUTENCAO }
   ];
+  
+  acomodacaoOriginal: CreateAcomodacaoDto | null = null;  
 
   files = signal<File[]>([]);
 
@@ -96,9 +102,37 @@ export class CadAcomodacaoComponent implements OnDestroy {
     private cepService: CepService,
     private geocodingService: GeocodingService,
     private tipologradouroService: TipoLogradouroService,
+    // private route: ActivatedRoute,
+    private acomodacaoState: AcomodacaoStateService    
   ) {
     this.tiposLogradouro = this.tipologradouroService.getTiposPadrao();    
   }
+
+  ngOnInit() {
+    this.acomodacaoState.currentAcomodacao.pipe(
+      takeUntil(this.destroy$) // Garante que a subscrição será encerrada
+    ).subscribe(acomodacao => {
+      if (acomodacao) {
+        // Limpa o cache antes de carregar novas imagens
+        this.imageCache.clearCache();
+        
+        this.acomodacao.set({
+          ...acomodacao,
+          imagens: []
+        });
+        this.modoEdicao = true;
+        this.idAcomodacao = acomodacao.id;
+        this.loadImagens(acomodacao);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(); // Encerra todas as subscrições
+    this.destroy$.complete();
+    this.imageCache.clearCache();
+    this.acomodacaoState.clearAcomodacao();
+  }  
 
   carregandoEndereco = signal(false);
 
@@ -206,152 +240,7 @@ buscarCoordenadas() {
     }));
   }  
 
-  // //------- Imagens - Tratamento do upload de multiplas imagens do form
-
-  // handleFileSelect(event: any): void {
-  //   try {
-  //     // Debug: Mostra a estrutura real do evento
-  //     console.log('Estrutura completa do evento:', event);
-  
-  //     // Extrai arquivos de forma mais segura
-  //     let files: File[] = [];
-  
-  //     // Caso 1: Evento padrão do PrimeNG (contém .files)
-  //     if (event?.files && Array.isArray(event.files)) {
-  //       files = [...event.files];
-  //     } 
-  //     // Caso 2: Evento pode ser o array diretamente
-  //     else if (Array.isArray(event)) {
-  //       files = [...event];
-  //     }
-  //     // Caso 3: Pode ser um único arquivo
-  //     else if (event instanceof File || event?.name) {
-  //       files = [event];
-  //     }
-  
-  //     // Filtra arquivos válidos
-  //     const validFiles = files.filter(file => {
-  //       const isValid = file instanceof File && 
-  //                      file.size > 0 && 
-  //                      file.size <= 1000000 &&
-  //                      /^image\/(jpeg|png|gif|webp)$/i.test(file.type);
-        
-  //       if (!isValid) {
-  //         console.warn('Arquivo inválido ignorado:', {
-  //           name: file.name,
-  //           type: file.type,
-  //           size: file.size
-  //         });
-  //       }
-  //       return isValid;
-  //     });
-  
-  //     if (validFiles.length === 0) {
-  //       console.warn('Nenhum arquivo válido encontrado');
-  //       return;
-  //     }
-  
-  //     // Atualiza o estado
-  //     this.acomodacao.update(ac => ({
-  //       ...ac,
-  //       imagens: [...(ac.imagens || []), ...validFiles]
-  //     }));
-  
-  //     console.log('Arquivos adicionados com sucesso:', validFiles.map(f => f.name));
-  //   } catch (error) {
-  //     console.error('Erro ao processar seleção de arquivos:', error);
-  //     this.notificationService.notify('error', 'Erro ao carregar imagens');
-  //   }
-  // }
-
-  // private validarArquivo(file: File): boolean {
-  //   // Verifica se é realmente um arquivo
-  //   if (!(file instanceof File)) return false;
-    
-  //   // Verifica tipo do arquivo (opcional)
-  //   const tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
-  //   if (!tiposPermitidos.includes(file.type)) return false;
-    
-  //   // Verifica tamanho máximo (opcional)
-  //   const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
-  //   if (file.size > tamanhoMaximo) return false;
-    
-  //   return true;
-  // }  
-
-  // // onRemove(event: { file: File }) {
-  // //   this.removeImage(event.file);
-  // // }
-
-  // onRemove(event: { file: File }): void {
-  //   if (!event?.file) return;
-    
-  //   this.imageCache.revokeImage(event.file);
-  //   this.acomodacao.update(ac => ({
-  //     ...ac,
-  //     imagens: ac.imagens?.filter(img => img.name !== event.file.name) || []
-  //   }));
-    
-  //   console.log('Arquivo removido:', event.file.name);
-  // }
-
-  // removeImage(file: File) {
-  //   this.imageCache.revokeImage(file);    
-  //   this.acomodacao.update(ac => ({
-  //     ...ac,
-  //     imagens: ac.imagens?.filter(img => img !== file) || []
-  //   }));
-  // }
-
-  // // getPreview(file: File | undefined): string {
-  // //   if (!file) return '';
-  // //   return this.imageCache.cacheImage(file);
-  // // }
-
-
-
-  // onImageLoad(file: File) {
-  //   console.log('Imagem carregada:', file.name);
-  //   // Lógica adicional se necessário
-  // }  
-
-  // checkImagesBeforeSubmit(): void {
-  //   const currentImages = this.acomodacao().imagens;
-  //   console.log('Imagens no estado antes do envio:', currentImages);
-    
-  //   if (currentImages && currentImages.length > 0) {
-  //     currentImages.forEach((img, index) => {
-  //       console.log(`Imagem ${index + 1}:`, {
-  //         name: img.name,
-  //         type: img.type,
-  //         size: img.size,
-  //         lastModified: img.lastModified
-  //       });
-  //     });
-  //   } else {
-  //     console.warn('Nenhuma imagem encontrada no estado do componente');
-  //   }
-  // }
   @ViewChild('fileUpload') fileUpload: any;
-// No seu componente
-// async handleFileSelect(event: any): Promise<void> {
-//   try {
-//     const files = await this.extractFilesFromPrimeNGEvent(event);
-    
-//     if (files.length === 0) {
-//       console.warn('Nenhum arquivo válido encontrado');
-//       return;
-//     }
-
-//     this.acomodacao.update(ac => ({
-//       ...ac,
-//       imagens: [...(ac.imagens || []), ...files]
-//     }));
-    
-//   } catch (error) {
-//     console.error('Erro ao processar arquivos:', error);
-//   }
-// }
 
 handleFileSelect(event: any): void {
   console.log('Evento recebido:', event);
@@ -392,34 +281,6 @@ addFile(newFile: File) {
   this.files.update(currentFiles => [...currentFiles, newFile]);
 };
 
-// private async extractFilesFromPrimeNGEvent(event: any): Promise<File[]> {
-//   const fileObjects = [];
-  
-//   if (event?.currentFiles && Array.isArray(event.currentFiles)) {
-//     fileObjects.push(...event.currentFiles);
-//   }
-  
-//   if (event?.files && typeof event.files === 'object') {
-//     fileObjects.push(...Object.values(event.files));
-//   }
-
-//   // const files: File[] = [];
-  
-//   for (const obj of fileObjects) {
-//     try {
-//       if (obj.objectURL?.changingThisBreaksApplicationSecurity) {
-//         const blobUrl = obj.objectURL.changingThisBreaksApplicationSecurity;
-//         const file = await this.blobUrlToFile(blobUrl, obj.name || 'imagem_' + Date.now());
-//         if (file) this.files.push(file);
-//       }
-//     } catch (e) {
-//       console.warn('Falha ao converter blob:', e);
-//     }
-//   }
-  
-//   return this.files;
-// }
-
 private blobUrlToFile(blobUrl: string, fileName: string): Promise<File> {
   return fetch(blobUrl)
     .then(res => res.blob())
@@ -449,15 +310,6 @@ private validateFile(file: any): boolean {
   return isValid;
 }
 
-private updateImageState(files: File[]): void {
-  this.acomodacao.update(ac => ({
-    ...ac,
-    imagens: [...(ac.imagens || []), ...files]
-  }));
-  
-  console.log('Arquivos adicionados:', files.map(f => f.name));
-}
-
 onRemove(file: File): void {
   this.imageCache.removeImage(file);
   this.files.update(currentFiles => 
@@ -479,48 +331,13 @@ private isSameFile(a: File, b: File): boolean {
          a.lastModified === b.lastModified;
 }
 
-
-  // onRemove(event: { file: File }): void {
-  //   if (!event?.file) return;
-    
-  //   this.imageCache.revokeImage(event.file);
-  //   this.acomodacao.update(ac => ({
-  //     ...ac,
-  //     imagens: ac.imagens?.filter(img => img.name !== event.file.name) || []
-  //   }));
-    
-  //   console.log('Arquivo removido:', event.file.name);
-  // }
-
-  // removeImage(file: File) {
-  //   this.imageCache.revokeImage(file);    
-  //   this.acomodacao.update(ac => ({
-  //     ...ac,
-  //     imagens: ac.imagens?.filter(img => img !== file) || []
-  //   }));
-  // }
-
-  // getPreview(file: File | undefined): string {
-  //   if (!file || !(file instanceof File)) {
-  //     console.warn('Arquivo inválido para preview:', file);
-  //     return '';
-  //   }
-  //   return this.imageCache.cacheImage(file);
-  // }  
-
   getPreview(img: File): string {
     return URL.createObjectURL(img); // Gera uma URL temporária para preview da imagem
   }
 
  //------- Formulário - Postagem do mesmo
   async onSubmit() {
-    // if (!this.isFormValid()) {
-    //   return;
-    // }
-
-
     const formData = new FormData();
-  
     // Adiciona os dados do formulário
     const acomodacaoData = this.acomodacao();
     for (const key in acomodacaoData) {
@@ -534,16 +351,16 @@ private isSameFile(a: File, b: File): boolean {
       formData.append(`imagens`, file, file.name);
     });
 
-    // console.log('Teste pra ver se tem algum arquivo de imagem!', this.files);
+    if (this.modoEdicao) {
+      await this.atualizarAcomodacao(formData);
+    } else {
+      await this.criarAcomodacao(formData);
+    }    
+  }
 
-    // this.files().forEach(file => {
-    //   formData.append('imagens', file, file.name);
-    // });
-  
-    // this.files.forEach(file => {
-    //   formData.append('imagens', file, file.name);
-    // });
-
+  async criarAcomodacao(formData: FormData) {
+    // Adiciona os dados do formulário
+    const acomodacaoData = this.acomodacao();    
     this.acomodacaoService.createAcomodacao(formData).subscribe({
       next: () => {
         this.notificationService.notify('success', 'Acomodação cadastrada com sucesso!');
@@ -553,58 +370,50 @@ private isSameFile(a: File, b: File): boolean {
       },
       error: (error) => {
         this.notificationService.notify('error', 'Erro ao cadastrar acomodação.');
-
-          //Exibe todas as mensagens de erro de validação do Backend
-          if(error.error.message !== undefined && error.error.message.length > 0) {
-            for(let i = 0; i < error.error.message.length; i++) {
-              this.notificationService.notify('error', error.error.message[i]);
-            }
+        //Exibe todas as mensagens de erro de validação do Backend
+        if(Array.isArray(error.error.message) && error.error.message.length > 0) {
+          for(let i = 0; i < error.error.message.length; i++) {
+            this.notificationService.notify('error', error.error.message[i]);
           }
+        }
+        this.notificationService.notify('error', error.error.message);    
       }
     });
-
-
-
-
-
-    
-    // this.checkImagesBeforeSubmit(); // Adicione esta linha
-  
-    // const formData = new FormData();
-    
-    // // Adiciona todos os campos do formulário
-    // Object.entries(this.acomodacao()).forEach(([key, value]) => {
-    //   if (key === 'imagens') {
-    //     // Adiciona cada imagem separadamente
-    //     (value as File[] || []).forEach((file) => {
-    //       formData.append('imagens', file, file.name);
-    //     });
-    //   } else if (value !== null && value !== undefined) {
-    //   // Preserva números como números (não usa toString())
-    //   if (typeof value === 'number') {
-    //     formData.append(key, value.toString()); // Ainda precisa ser string no FormData
-    //   } else {
-    //     formData.append(key, value.toString());
-    //   }
-    //   }
-    // });
-
-    // try {
-    //   const response =   await this.acomodacaoService.createAcomodacao(formData)
-    //   .subscribe({
-    //     next: (res) => {
-    //       console.log('Sucesso!', res);
-    //       this.notificationService.notify('success', 'Acomodação cadastrada com sucesso!');
-    //     },
-    //       error: (err) => console.error('Erro:', err)
-    //   });
-      
-    //   // Limpar formulário após envio
-    //   this.resetForm();
-    // } catch (error) {
-    //   this.handleError(error);
-    // }
   }
+  
+  async atualizarAcomodacao(formData: FormData) {
+    if (!this.idAcomodacao) {
+      this.notificationService.notify('error', 'ID da acomodação não encontrado');
+      return;
+    }
+  
+    // Adiciona o ID ao FormData se necessário
+    formData.append('id', this.idAcomodacao.toString());
+  
+    this.acomodacaoService.updateAcomodacao(this.idAcomodacao, formData).subscribe({
+      next: (response) => {
+        this.notificationService.notify('success', 'Acomodação atualizada com sucesso!');
+        this.imageCache.clearCache();
+        this.resetForm();
+        
+        // Opcional: Navegar para outra rota após sucesso
+        // this.router.navigate(['/acomodacoes']);
+      },
+      error: (error) => {
+        this.notificationService.notify('error', 'Erro ao atualizar acomodação');
+        
+        if (error.error?.message) {
+          if (Array.isArray(error.error.message)) {
+            error.error.message.forEach((msg: string) => {
+              this.notificationService.notify('error', msg);
+            });
+          } else {
+            this.notificationService.notify('error', error.error.message);
+          }
+        }
+      }
+    });
+  }  
 
   private resetForm() {
     this.acomodacao.set({
@@ -664,7 +473,58 @@ private isSameFile(a: File, b: File): boolean {
     return true;
   }
 
-  ngOnDestroy() {
-    this.imageCache.clearCache();
+
+
+  private async loadImagens(acomodacao: any) {
+    if (acomodacao.imagens && acomodacao.imagens.length > 0) {
+      try {
+        // 1. Primeiro converte os caminhos para URLs completas
+        const imageUrls = this.acomodacaoService.getArrayImageUrl(acomodacao);
+        console.log('URLs completas das imagens:', imageUrls);
+  
+        // 2. Converte URLs para File objects
+        const files: File[] = [];
+        
+        for (const url of imageUrls) {
+          try {
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const file = await this.urlToFile(url, fileName);
+            files.push(file);
+          } catch (error) {
+            console.error(`Erro ao converter a imagem ${url}:`, error);
+          }
+        }
+  
+        // 3. Adiciona ao cache e atualiza o estado
+        files.forEach(file => this.imageCache.addImage(file));
+        
+        this.acomodacao.update(ac => ({
+          ...ac,
+          imagens: this.imageCache.getImages()
+        }));
+  
+        console.log('Imagens carregadas no formulário:', this.imageCache.getImages());
+      } catch (error) {
+        console.error('Erro ao carregar imagens:', error);
+      }
+    }
   }
+
+  // Método auxiliar para converter URL para File
+  private async urlToFile(imageUrl: string, filename: string): Promise<File> {
+    try {
+      const response = await fetch(imageUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+  
+      const blob = await response.blob();
+      return new File([blob], filename, { type: blob.type || 'image/jpeg' });
+    } catch (error) {
+      console.error(`Erro ao converter URL para File: ${imageUrl}`, error);
+      throw error;
+    }
+  } 
+
 }

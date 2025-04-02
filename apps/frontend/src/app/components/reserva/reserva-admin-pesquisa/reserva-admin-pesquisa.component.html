@@ -1,0 +1,120 @@
+<div class="bg-white p-6 rounded-lg shadow-md">
+  <h3 class="text-xl font-semibold text-gray-800 mb-4">Filtros de Pesquisa de Reservas</h3>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <!-- Filtro de CPF -->
+    <div>
+      <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+      <p-inputMask
+        id="cpf"
+        name="cpf"
+        mask="999.999.999-99"
+        [(ngModel)]="filtro.cpf"
+        placeholder="000.000.000-00"
+        [styleClass]="'w-full p-2 border border-gray-300 rounded-md'"
+      ></p-inputMask>
+    </div>
+
+    <!-- Filtro de Email -->
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <input 
+        pInputText
+        type="email"
+        id="email"
+        [(ngModel)]="filtro.email"
+        name="email"
+        class="w-full p-2 border border-gray-300 rounded-md"
+        placeholder="cliente@exemplo.com"
+      />
+    </div>
+
+    <!-- Filtro de Telefone -->
+    <div>
+      <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+      <p-inputMask
+        id="telefone"
+        name="telefone"
+        mask="(99) 99999-9999"
+        [(ngModel)]="filtro.telefone"
+        placeholder="(00) 00000-0000"
+        [styleClass]="'w-full p-2 border border-gray-300 rounded-md'"
+      ></p-inputMask>
+    </div>
+
+    <!-- Filtro de Status -->
+    <div>
+      <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+      <p-dropdown
+        id="status"
+        [options]="statusOptions"
+        [(ngModel)]="filtro.status"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione o status"
+        [showClear]="true"
+        [styleClass]="'w-full p-2 border border-gray-300 rounded-md'"
+      ></p-dropdown>
+    </div>
+
+    <!-- Filtro de Período - Data Início -->
+    <div>
+      <label for="dataInicio" class="block text-sm font-medium text-gray-700">Data Início</label>
+      <p-calendar
+        id="dataInicio"
+        [(ngModel)]="filtro.dataInicio"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        placeholder="Selecione a data"
+        [styleClass]="'w-full rounded-md'"
+        name="dataInicio"
+      ></p-calendar>
+    </div>
+
+    <!-- Filtro de Período - Data Fim -->
+    <div>
+      <label for="dataFim" class="block text-sm font-medium text-gray-700">Data Fim</label>
+      <p-calendar
+        id="dataFim"
+        [(ngModel)]="filtro.dataFim"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        placeholder="Selecione a data"
+        [styleClass]="'w-full  rounded-md'"
+        name="dataFim"
+      ></p-calendar>
+    </div>
+
+    <!-- Filtro de Itens por Página -->
+    <div>
+      <label for="limit" class="block text-sm font-medium text-gray-700">Itens por Página</label>
+      <p-inputNumber
+        id="limit"
+        [(ngModel)]="filtro.limit"
+        [min]="1"
+        placeholder="Itens por página"
+        [styleClass]="'w-full  rounded-md'"
+        name="limit"
+      ></p-inputNumber>
+    </div>
+
+    <!-- Botões -->
+    <div class="flex items-end gap-2">
+      <button
+        pButton
+        type="button"
+        (click)="aplicarFiltros()"
+        label="Aplicar"
+        class="flex-1 h-[42px]"
+      ></button>
+      
+      <button
+        pButton
+        type="button"
+        (click)="limparFiltros()"
+        label="Limpar"
+        class="flex-1 h-[42px] p-button-secondary"
+      ></button>
+    </div>
+  </div>
+</div>

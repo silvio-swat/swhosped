@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { PaginatedReservaResult } from '../../interfaces/reserva.interface'; 
+import { PaginatedReservaResult, ReservaFiltroPesquisa } from '../../interfaces/reserva.interface'; 
 import { ReservaClientePesquisaComponent } from '../../components/reserva/reserva-cliente-pesquisa/reserva-cliente-pesquisa.component';
 import { ReservaClienteListComponent } from '../../components/reserva/reserva-cliente-list/reserva-cliente-list.component'; 
 import { ReservaService } from '../../services/reserva.service'; 
@@ -28,7 +28,7 @@ export class ReservaClienteComponent {
 
   aplicarFiltros(filtros: any) {
     this.filtrosAtuais = filtros;  // Salva os filtros atuais    
-    this.reservaService.buscarReservasComFiltros(filtros).subscribe(
+    this.reservaService.buscarReservasCliente(filtros).subscribe(
       (resultado) => {
         this.reservaFiltradas = resultado;
       },

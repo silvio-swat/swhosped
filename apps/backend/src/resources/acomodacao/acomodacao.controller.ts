@@ -6,6 +6,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete,
    Query,
    UsePipes,
    ValidationPipe} from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express'; // Importe Express para o tipo
 import { AcomodacaoService } from './acomodacao.service';
 import { Acomodacao } from './entities/acomodacao.entity';
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer'; // Importação direta do Multer
 import { extname } from 'path';
+import { UpdateAcomodacaoDto } from './dto/update-acomodacao.dto';
 
 @Controller('acomodacaos')
 export class AcomodacaoController {
@@ -32,7 +34,7 @@ export class AcomodacaoController {
   @Post()
   //@UseGuards(JwtAuthGuard, RolesGuard)
   //@Roles(Role.Admin)
-  @UseInterceptors(FilesInterceptor('imagens', 5, {
+  @UseInterceptors(FilesInterceptor('imagens', 20, {
     storage: diskStorage({
         destination: './apps/backend/uploads/img', // Diretório onde os arquivos serão salvos
         filename: (req, file, cb) => {
@@ -72,7 +74,6 @@ export class AcomodacaoController {
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() filters: FilterAcomodacaoDto): Promise<PaginatedAcomodacaoResult> {
-    console.log('Filtros recebidos:', filters);
     return this.acomodacaoService.findAllWithFilters(filters);
   }
 
@@ -86,14 +87,40 @@ export class AcomodacaoController {
     return this.acomodacaoService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAcomodacaoDto: UpdateAcomodacaoDto) {
-  //   return this.acomodacaoService.update(+id, updateAcomodacaoDto);
-  // }
+  @Patch(':id')
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'imagens', maxCount: 20 },
+  ], {
+    storage: diskStorage({
+      destination: './apps/backend/uploads/img',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        const ext = extname(file.originalname);
+        cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+      },
+    }),
+  }))
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: { imagens?: Express.Multer.File[] },
+    @Body() updateAcomodacaoDto: UpdateAcomodacaoDto
+  ) {
+    try {
+      return await this.acomodacaoService.update(
+        id,
+        updateAcomodacaoDto,
+        files?.imagens || []
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.acomodacaoService.remove(+id);
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.acomodacaoService.remove(id);
   }
 }
 

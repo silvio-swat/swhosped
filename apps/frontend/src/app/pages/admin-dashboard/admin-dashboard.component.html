@@ -1,1 +1,13 @@
-<p>admin-dashboard works!</p>
+<div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-semibold text-gray-800">Gerenciar Acomodações</h2>
+        <p class="text-lg text-gray-600">Crie, Edite e exclua uma acomodação</p>
+    </div>
+
+    <!-- Search Filters Section -->            
+    <app-acomodacao-filtros-pesquisa (filtrosAlterados)="aplicarFiltros($event)"></app-acomodacao-filtros-pesquisa>            
+    
+    <!-- Accommodation List -->
+    <app-acomodacao-admin-list [acomodacoes]="acomodacoesFiltradas" [filtro]="filtrosAtuais"></app-acomodacao-admin-list>
+
+</div>

@@ -5,6 +5,7 @@ import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Reserva } from './entities/reserva.entity';
 import { FilterReservaDto } from './dto/filtro-reserva.dto';
 import { PaginatedReservaResult } from './reserva.interface';
+import { FilterReservaAdminDto } from './dto/filtro-reserva-admin.dto';
 
 @Controller('reservas')
 export class ReservaController {
@@ -27,10 +28,19 @@ export class ReservaController {
     }
   }
 
-  @Get()
+  @Get('cliente')
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() filters: FilterReservaDto): Promise<PaginatedReservaResult> {
+    if (!filters.cpf && !filters.email && !filters.telefone) {
+      return { data: [], totalItems: 0, totalPages: 0, currentPage: 0 };
+    }    
     return this.reservaService.findAllWithFilters(filters);
+  }
+
+  @Get('admin')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAllAdmin(@Query() filters: FilterReservaAdminDto): Promise<PaginatedReservaResult> {
+    return this.reservaService.findAllWithFiltersAdmin(filters);
   }
 
   // Método para cancelar a reserva

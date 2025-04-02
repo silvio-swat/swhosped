@@ -17,8 +17,14 @@ import { apiLinks } from '../shared/environment';
 export class AcomodacaoService {
   // private apiUrl = apiLinks.devLocal +'api/acomodacaos';
   private apiUrl = apiLinks.devNetwork +'api/acomodacaos';
+  imgPath: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private backendSrv: BackendService
+  ) {
+    this.imgPath = this.backendSrv.getServerUrl();
+  }
+
 
   createAcomodacao(formData: FormData): Observable<AcomodacaoResponse> {
     // Debug: Mostra todo o conteúdo do FormData
@@ -43,12 +49,8 @@ export class AcomodacaoService {
     return this.http.get<AcomodacaoResponse>(`${this.apiUrl}/${id}`);
   }
 
-  updateAcomodacao(id: number, data: Partial<CreateAcomodacaoDto>): Observable<AcomodacaoResponse> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    
-    return this.http.patch<AcomodacaoResponse>(`${this.apiUrl}/${id}`, data, { headers });
+  updateAcomodacao(id: number, formData: FormData): Observable<AcomodacaoResponse> {
+    return this.http.patch<AcomodacaoResponse>(`${this.apiUrl}/${id}`, formData);
   }
 
   deleteAcomodacao(id: number): Observable<void> {
@@ -76,4 +78,56 @@ export class AcomodacaoService {
   getStatusAcomodacao(): StatusAcomodacao[] {
     return Object.values(StatusAcomodacao);
   }
+
+  // Método para retornar a URL correta da imagem
+  getImageUrl(acomodacao: AcomodacaoResponse): string {
+    if (acomodacao.imagens && acomodacao.imagens.length > 0) {
+      const first = acomodacao.imagens[0];
+      // Verifica se a URL já é completa
+      if (first.startsWith('http://') || first.startsWith('https://')) {
+        return first;
+      } else {
+        return this.imgPath + first.replace('apps/backend', '');
+      }
+    }
+    return 'assets/imagem-padrao.jpg';
+  }   
+
+  // Método para retornar a URL correta da imagem
+  getArrayImageUrl(acomodacao: AcomodacaoResponse): any {
+    const imgLinks = [];
+    if (acomodacao.imagens && acomodacao.imagens.length > 0) {
+      for(let i = 0; i < acomodacao.imagens.length; i++){
+        const first = acomodacao.imagens[i];
+        // Verifica se a URL já é completa
+        if (first.startsWith('http://') || first.startsWith('https://')) {
+          imgLinks.push(first);
+        } else {
+          const linkConcatenado =  this.imgPath + first.replace('apps/backend', '');
+          imgLinks.push(linkConcatenado);
+        }
+      }
+      return imgLinks;
+    }
+    return [];
+  }     
+}
+
+// acomodacao-state.service.ts
+import { BehaviorSubject } from 'rxjs';
+import { BackendService } from './backend.service';
+
+@Injectable({ providedIn: 'root' })
+export class AcomodacaoStateService {
+  private acomodacaoParaEdicao = new BehaviorSubject<any>(null);
+  currentAcomodacao = this.acomodacaoParaEdicao.asObservable();
+
+  setAcomodacaoParaEdicao(acomodacao: any) {
+    this.acomodacaoParaEdicao.next(acomodacao);
+  }
+
+  clearAcomodacao() {
+    this.acomodacaoParaEdicao.next(null); // Limpa o estado
+  }
+
 }

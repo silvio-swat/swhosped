@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAcomodacaoDto } from './dto/create-acomodacao.dto';
-// import { UpdateAcomodacaoDto } from './dto/update-acomodacao.dto';
+import { UpdateAcomodacaoDto } from './dto/update-acomodacao.dto';
 import { AcomodacaoFactory } from './acomodacao.factory';
 
 // src/acomodacao/acomodacao.service.ts
-import { EntityManager } from '@mikro-orm/postgresql';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Acomodacao } from './entities/acomodacao.entity';
 import { FilterAcomodacaoDto } from './dto/filter-acomodacao.dto';
+import { join } from 'path';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class AcomodacaoService {
@@ -74,37 +76,6 @@ export class AcomodacaoService {
     };
   }
   
-
-  // async findAllWithFilters(query: FilterAcomodacaoDto): Promise<Acomodacao[]> {
-  //   const { page = query.page, limit = query.limit, ...filters } = query;
-  //   const offset = (page - 1) * limit;
-  
-  //   const qb = this.em.createQueryBuilder(Acomodacao)
-  //     .limit(limit)
-  //     .offset(offset);
-
-  //   if (filters.tipo) {
-  //     qb.andWhere({ tipo: filters.tipo });
-  //   }
-  //   if (filters.capacidade) {
-  //     qb.andWhere({ capacidade: { $gte: filters.capacidade } });
-  //   }
-  //   if (filters.precoMin !== undefined) {
-  //     qb.andWhere({ precoPorNoite: { $gte: filters.precoMin } });
-  //   }
-  //   if (filters.precoMax !== undefined) {
-  //     qb.andWhere({ precoPorNoite: { $lte: filters.precoMax } });
-  //   }
-  //   if (filters.cidade) {
-  //     qb.andWhere({ cidade: filters.cidade });
-  //   }
-  //   if (filters.estado) {
-  //     qb.andWhere({ estado: filters.estado });
-  //   }
-
-  //   return await qb.getResultList();
-  // }  
-
   findAll() {
     return `This action returns all acomodacao`;
   }
@@ -113,11 +84,66 @@ export class AcomodacaoService {
     return `This action returns a #${id} acomodacao`;
   }
 
-  // update(id: number, updateAcomodacaoDto: UpdateAcomodacaoDto) {
-  //   return `This action updates a #${id} acomodacao`;
-  // }
+  async update(id: number, updateDto: UpdateAcomodacaoDto, newFiles: Express.Multer.File[] = []) {
+    const acomodacao = await this.em.findOneOrFail(Acomodacao, id);
+    wrap(acomodacao).assign(updateDto);
+  
+    const currentImages = acomodacao.imagens || [];
+    let imagesToDelete: string[] = [];
+  
+    // Filtra imagens removidas
+    if (updateDto.imagensRemovidas) {
+      imagesToDelete = currentImages.filter(img => 
+        updateDto.imagensRemovidas.includes(img)
+      );
+      acomodacao.imagens = currentImages.filter(img => 
+        !updateDto.imagensRemovidas.includes(img)
+      );
+    }
+  
+    // Adiciona novas imagens
+    const newImagePaths = newFiles.map(file => file.path);
+    acomodacao.imagens = [...acomodacao.imagens, ...newImagePaths];
+  
+    await this.em.persistAndFlush(acomodacao);
+  
+    // Remove fisicamente as imagens (opcional)
+    if (imagesToDelete.length > 0) {
+      await this.deleteImageFiles(imagesToDelete);
+    }
+  
+    return acomodacao;
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} acomodacao`;
+  private async deleteImageFiles(imagePaths: string[]) {
+    const deletePromises = imagePaths.map(async path => {
+      try {
+        const fullPath = join(process.cwd(), path);
+        await unlink(fullPath);
+      } catch (err) {
+        console.error(`Erro ao deletar imagem ${path}:`, err);
+      }
+    });
+    
+    await Promise.all(deletePromises);
+  }  
+
+  async remove(id: number) {
+    // 1. Encontra a acomodação com todas as relações necessárias
+    const acomodacao = await this.em.findOne(Acomodacao, id);
+    
+    if (!acomodacao) {
+      throw new NotFoundException(`Acomodação com ID ${id} não encontrada`);
+    }
+  
+    // 2. Remove as imagens associadas do sistema de arquivos
+    if (acomodacao.imagens && acomodacao.imagens.length > 0) {
+      await this.deleteImageFiles(acomodacao.imagens);
+    }
+  
+    // 3. Remove a entidade do banco de dados
+    await this.em.removeAndFlush(acomodacao);
+    
+    return { message: `Acomodação com ID ${id} removida com sucesso` };
   }
 }

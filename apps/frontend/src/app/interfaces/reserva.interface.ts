@@ -19,6 +19,17 @@ export interface ReservaFiltroPesquisa {
     limit?: number;
 }
 
+export interface ReservaFiltroAdminPesquisa {
+    cpf?: string;
+    email?: string;
+    telefone?: string;
+    status?: 'Confirmada' | 'Cancelada';
+    dataInicio?: Date;
+    dataFim?: Date;
+    limit?: number;
+    page?: number;
+}
+
 export interface PaginatedReservaResult {
     data: Reserva[];
     totalItems: number;

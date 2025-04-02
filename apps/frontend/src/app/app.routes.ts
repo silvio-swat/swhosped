@@ -8,6 +8,7 @@ import { PublicLayoutComponent } from './layouts/public-layout/public-layout.com
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
+import { ReservaAdminComponent } from './pages/reserva-admin/reserva-admin.component';
 
 
 export const appRoutes: Route[] = [
@@ -26,7 +27,9 @@ export const appRoutes: Route[] = [
     { path: 'admin', component: AdminLayoutComponent,
         children: [
             { path: '', component: AdminDashboardComponent },
-            { path: 'cad-acomodacao', component: CadAcomodacaoComponent },   
+            { path: 'cad-acomodacao',     component: CadAcomodacaoComponent },
+            { path: 'acomodacoes/editar', component: CadAcomodacaoComponent } ,
+            { path: 'reserva-admin', component: ReservaAdminComponent },                    
             // outras rotas administrativas
         ]        
     },               

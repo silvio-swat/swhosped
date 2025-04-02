@@ -6,7 +6,6 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { AcomodacaoResponse } from '../../interfaces/acomodacao.interface';
-import { Cliente } from '../../interfaces/cliente.interface';
 import { Reserva } from '../../interfaces/reserva.interface';
 import { ReservaService } from '../../services/reserva.service';
 import { MessageService } from 'primeng/api';
@@ -64,14 +63,6 @@ export class ReservaComponent implements OnInit {
 
   minDate: Date = new Date();
   maxDate: Date = new Date(new Date().setFullYear(this.minDate.getFullYear() + 1));
-
-
-  // cliente = signal<Cliente>({
-  //   nomeCompleto: '',
-  //   email: '',
-  //   telefone: '',
-  //   cpf: ''
-  // });
 
   ngOnInit(): void {
     // Recupera os dados de duas formas diferentes para garantir

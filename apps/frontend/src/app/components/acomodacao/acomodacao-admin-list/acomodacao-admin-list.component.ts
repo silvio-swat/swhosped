@@ -2,19 +2,19 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { AcomodacaoService } from '../../../services/acomodacao.service';
+import { AcomodacaoService, AcomodacaoStateService } from '../../../services/acomodacao.service';
 import { AcomodacaoResponse, FiltroAcomodacao, PaginatedAcomodacaoResult } from '../../../interfaces/acomodacao.interface';
 import { BackendService } from '../../../services/backend.service';
 import { Router } from '@angular/router';
-
+import { NotificationService } from '../../../../core/notifications/notification.service';
 
 @Component({
-  selector: 'app-acomodacao-list',
+  selector: 'app-acomodacao-admin-list',
   imports: [ButtonModule, CommonModule],
-  templateUrl: './acomodacao-list.component.html',
-  standalone: true,
+  templateUrl: './acomodacao-admin-list.component.html',
+  styleUrl: './acomodacao-admin-list.component.css'
 })
-export class AcomodacaoListComponent implements OnInit{
+export class AcomodacaoAdminListComponent implements OnInit {
   @Input() filtro: FiltroAcomodacao = {};
   @Input() acomodacoes!: PaginatedAcomodacaoResult;
   imgPath: string;
@@ -23,7 +23,9 @@ export class AcomodacaoListComponent implements OnInit{
 
 
   constructor(private acomodacaoService: AcomodacaoService,
-              private backendSrv: BackendService
+              private backendSrv: BackendService,
+              private acomodacaoState: AcomodacaoStateService,
+              private notify: NotificationService
   ) {
     this.imgPath = this.backendSrv.getServerUrl();
   }
@@ -100,4 +102,52 @@ export class AcomodacaoListComponent implements OnInit{
       }
     });
   }
+
+  editarAcomodacao(acomodacao: any) {
+
+    this.acomodacaoState.setAcomodacaoParaEdicao(acomodacao);
+    this.router.navigate(['admin/acomodacoes/editar']);    
+    // // Codifica o objeto como string JSON para passar na rota
+    // const acomodacaoJson = encodeURIComponent(JSON.stringify(acomodacao));
+    
+    // // Navega para a rota de edição com o objeto como parâmetro
+    // this.router.navigate(['acomodacoes/editar'], { 
+    //   queryParams: { 
+    //     acomodacao: acomodacaoJson,
+    //     modo: 'edicao'
+    //   } 
+    // });
+  }
+  
+  deleteAcomodacao(acomodacaoId: number): void {
+      // Adiciona os dados do formulário
+      this.acomodacaoService.deleteAcomodacao(acomodacaoId).subscribe({
+        next: () => {
+        // Atualiza a lista local mantendo a imutabilidade
+        this.acomodacoes = {
+          ...this.acomodacoes,
+          data: this.acomodacoes.data.filter(a => a.id !== acomodacaoId),
+          totalItems: this.acomodacoes.totalItems - 1
+        };
+        
+        this.notify.notify('success', 'Acomodação removida com sucesso!');
+        
+        // Se a página ficou vazia e não é a primeira, volta uma página
+        if (this.acomodacoes.data.length === 0 && this.acomodacoes.currentPage > 1) {
+          this.paginaAnterior();
+        }
+      },
+      error: (error) => {
+        //Exibe todas as mensagens de erro de validação do Backend
+        if(Array.isArray(error.error.message) && error.error.message.length > 0) {
+          for(let i = 0; i < error.error.message.length; i++) {
+            this.notify.notify('error', error.error.message[i]);
+          }
+        }
+        this.notify.notify('error', error.error.message);    
+      }
+    });
+  }  
+  
+   
 }

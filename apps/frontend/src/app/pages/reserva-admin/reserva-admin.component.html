@@ -1,0 +1,12 @@
+<div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-semibold text-gray-800">Pesquisar Reservas</h2>
+        <p class="text-lg text-gray-600">Filtrar reservas por período ou informações do cliente</p>
+    </div>            
+    
+    <!-- Search Filters Section -->            
+    <app-reserva-admin-pesquisa (filtrosAlterados)="aplicarFiltros($event)"></app-reserva-admin-pesquisa>          
+    
+    <!-- Reserva List -->
+    <app-reserva-admin-list [reservas]="reservaFiltradas" [filtro]="filtrosAtuais"></app-reserva-admin-list>  
+</div>            

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
-import { Reserva, PaginatedReservaResult } from '../../../interfaces/reserva.interface'
+import { Reserva, PaginatedReservaResult, ReservaFiltroAdminPesquisa } from '../../../interfaces/reserva.interface'
 import { BackendService } from '../../../services/backend.service';
 import { ReservaService } from '../../../services/reserva.service';
 import { NotificationService } from '../../../../core/notifications/notification.service';
@@ -15,7 +15,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
-  selector: 'app-reserva-cliente-list',
+  selector: 'app-reserva-admin-list',
   imports: [CommonModule,
     ButtonModule,
     TagModule,
@@ -23,18 +23,23 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     //CepPipe,
     TelefonePipe],
   providers: [provideNgxMask(), ConfirmationService],
-  templateUrl: './reserva-cliente-list.component.html',
-  styleUrl: './reserva-cliente-list.component.css'
+  templateUrl: './reserva-admin-list.component.html',
+  styleUrl: './reserva-admin-list.component.css'
 })
-export class ReservaClienteListComponent {
+export class ReservaAdminListComponent implements OnInit  {
   @Input() reservas!: PaginatedReservaResult;
-  @Input() filtro: any = {};
+  @Input() filtro: ReservaFiltroAdminPesquisa = {};
 
   private router = inject(Router);
   private backendSrv = inject(BackendService);
   private reservaService = inject(ReservaService);
   private notify = inject(NotificationService);
   private confirmationService = inject(ConfirmationService);
+
+  ngOnInit(): void {
+    this.carregarReservas(1);
+  }
+
 
 
   // Obtém a URL da imagem da acomodação
@@ -75,14 +80,8 @@ export class ReservaClienteListComponent {
   // Carrega as reservas para a página especificada
   private carregarReservas(page: number): void {
     this.filtro.page = page;
-    this.reservaService.buscarReservasCliente(this.filtro).subscribe({
-      next: (reservas) => {
-        this.reservas = reservas
-        console.log('teste de entrada');
-        if(!this.reservas.data) {
-          this.notify.notify('info', 'Nenhuma reserva encontrada');
-        }
-      },
+    this.reservaService.buscarReservasAdmin(this.filtro).subscribe({
+      next: (reservas) => this.reservas = reservas,
       error: (err) => console.error('Erro ao carregar reservas:', err)
     });
   }
@@ -99,14 +98,6 @@ export class ReservaClienteListComponent {
 
   // Método para confirmar o cancelamento
   confirmarCancelamento(reserva: Reserva): void {
-    const agora = new Date();
-    const dataCheckIn = new Date(reserva.dataCheckIn);
-    const diferencaHoras = (dataCheckIn.getTime() - agora.getTime()) / (1000 * 60 * 60);
-
-    if (diferencaHoras < 24) {
-      this.notify.notify('error', 'Não é possível cancelar a reserva à menos de 24 horas do Check-in. Entre em contato com a administração da hospedagem.');
-      return;
-    }
     this.confirmationService.confirm({
       message: 'Tem certeza que deseja cancelar esta reserva?',
       header: 'Confirmar Cancelamento',
