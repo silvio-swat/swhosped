@@ -1,82 +1,161 @@
-# Swhosped
+# SWHosped - Monorepo NX com Angular 19 e NestJS 10
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+![GitHub repo size](https://img.shields.io/github/repo-size/detonador31/swhosped)
+![GitHub stars](https://img.shields.io/github/stars/detonador31/swhosped?style=social)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+Bem-vindo ao **SWHosped**, um monorepo NX utilizando **Angular 19** e **NestJS 10** para gerenciamento de hospedagens!
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🚀 Tecnologias Principais
 
-## Finish your CI setup
+- 🅰️ **Angular 19** - Framework frontend
+- 🎨 **PrimeNG** - Biblioteca de componentes UI para Angular
+- 🎨 **Tailwind**  - Biblioteca de componentes UI para Angular
+- 🟢 **NestJS 10** - Framework backend baseado em Node.js
+- 📦 **MikroORM** - ORM para TypeScript e Node.js
+- 🛢️ **PostgreSQL** - Banco de dados relacional
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/BqHUsLuo6M)
+
+- 🛠️ **NX** - Gerenciador de monorepos
+- 🎭 **Jest** - Testes unitários
+  
+
+## 📦 Pré-requisitos
+- Node.js 18+
+- PostgreSQL 15+
+- NPM 9+
 
 
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve frontend
-```
-
-To create a production bundle:
-
-```sh
-npx nx build frontend
-```
-
-To see all available targets to run for a project, run:
-
-```sh
-npx nx show project frontend
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
+## 📥 Como Clonar o Repositório
 
 ```sh
-npx nx g @nx/angular:app demo
+# Clonar o repositório
+ git clone https://github.com/detonador31/swhosped.git
+
+# Acessar a pasta do projeto
+cd swhosped
 ```
 
-To generate a new library, use:
+---
+
+## 📦 Instalar Dependências
 
 ```sh
-npx nx g @nx/angular:lib mylib
+npm install
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+---
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🛠️ Configuração do Backend (NestJS 10)
 
+### 1️⃣ Configurar o Banco de Dados PostgreSQL
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Antes de iniciar, tenha um banco de dados **PostgreSQL** configurado.
+Crie um banco de dados com o nome desejado.
 
-## Install Nx Console
+### 2️⃣ Configurar MikroORM
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+Edite o arquivo `mikro-orm.config.ts` para incluir suas credenciais do banco:
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```ts
+export default {
+  entities: ['./dist/**/*.entity.js'],
+  dbName: 'seu_banco',
+  type: 'postgresql',
+  user: 'seu_usuario',
+  password: 'sua_senha',
+  host: 'localhost',
+  port: 5432,
+  migrations: {
+    path: './migrations',
+    pattern: /^[\w-]+\.js$/,
+  },
+};
+```
 
-## Useful links
+### 3️⃣ Criar Banco de Dados com Migrações
 
-Learn more:
+```sh
+npm run mikro-orm migration:up
+```
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 4️⃣ Configurar CORS (main.ts)
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+No `main.ts`, adicione **allowedOrigins** para permitir conexões do frontend:
+
+```ts
+app.enableCors({
+  origin: ['http://localhost:4200', 'https://www.swhosped-frontend.com.br'],
+});
+```
+
+Essa configuração evita erros de **CORS** ao conectar com o frontend.
+
+### 5️⃣ Iniciar o Servidor NestJS
+
+```sh
+npm run start
+```
+
+Testar API: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🎨 Configuração do Frontend (Angular 19)
+
+### 1️⃣ Configurar Backend no `environment.ts`
+
+Edite o arquivo `/src/shared/environment.ts`:
+
+```ts
+export const environment = {
+  devLocal: 'http://localhost:3000/',
+  devNetwork: 'http://backend.nest.local/',
+  production: 'https://www.swhosped-backend.com.br/',
+};
+```
+
+### 2️⃣ Definir Ambiente no `backend.service.ts`
+
+No arquivo `src/app/services/backend.service.ts`, escolha o ambiente:
+
+```ts
+const API_URL = environment.devLocal; // Ou devNetwork, production
+```
+
+### 3️⃣ Iniciar o Servidor Angular
+
+```sh
+npm run start
+```
+
+Acesse: [http://localhost:4200](http://localhost:4200)
+
+---
+
+## 🏡 Funcionalidades Principais
+
+### 🏨 Cadastro de Acomodações
+✅ Busca de endereço por **CEP**
+✅ Busca automática de **coordenadas (latitude e longitude)**
+✅ Upload de **imagens** com miniaturas e salvamento no backend
+✅ Exibição de **mapa** na reserva da acomodação
+
+### 🔒 Autenticação e Administração
+✅ Área exclusiva para **administradores**
+✅ Para testar um usuário administrador, altere seu tipo diretamente no **PostgreSQL**:
+
+```sql
+UPDATE users SET role = 'Administrador' WHERE email = 'teste@email.com';
+```
+
+---
+
+## 🤝 Contribuindo
+Sinta-se à vontade para abrir issues e pull requests! Qualquer dúvida, entre em contato.
+
+📌 **Repositório:** [https://github.com/detonador31/swhosped](https://github.com/detonador31/swhosped)
+
+---
+
+Feito com ❤️ por [@detonador31](https://github.com/detonador31) 🚀
+
