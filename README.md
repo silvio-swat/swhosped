@@ -1,7 +1,6 @@
-# SWHosped - Monorepo NX com Angular 19 e NestJS 10
+# SWHosped - Sistema de Reservas para Hotéis e Pousadas com Angular 19 e NestJS 10
 
-![GitHub repo size](https://img.shields.io/github/repo-size/detonador31/swhosped)
-![GitHub stars](https://img.shields.io/github/stars/detonador31/swhosped?style=social)
+
 
 Bem-vindo ao **SWHosped**, um monorepo NX utilizando **Angular 19** e **NestJS 10** para gerenciamento de hospedagens!
 
@@ -75,6 +74,10 @@ export default {
 ### 3️⃣ Criar Banco de Dados com Migrações
 
 ```sh
+npm run mikro-orm migration:create
+```
+
+```sh
 npm run mikro-orm migration:up
 ```
 
@@ -93,7 +96,7 @@ Essa configuração evita erros de **CORS** ao conectar com o frontend.
 ### 5️⃣ Iniciar o Servidor NestJS
 
 ```sh
-npm run start
+npx nx serve backend
 ```
 
 Testar API: [http://localhost:3000](http://localhost:3000)
@@ -125,7 +128,12 @@ const API_URL = environment.devLocal; // Ou devNetwork, production
 ### 3️⃣ Iniciar o Servidor Angular
 
 ```sh
-npm run start
+npx nx serve frontend
+```
+
+Para acesso via rede local executar:
+```sh
+npx nx serve frontend --host=0.0.0.0 --port=4200
 ```
 
 Acesse: [http://localhost:4200](http://localhost:4200)
@@ -157,5 +165,5 @@ Sinta-se à vontade para abrir issues e pull requests! Qualquer dúvida, entre e
 
 ---
 
-Feito com ❤️ por [@detonador31](https://github.com/detonador31) 🚀
+Feito com por [@detonador31](https://github.com/detonador31) 🚀
 
