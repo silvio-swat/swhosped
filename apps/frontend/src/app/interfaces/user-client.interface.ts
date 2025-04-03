@@ -13,6 +13,7 @@ export interface UserResponse {
   id: number;
   nomeUsuario: string;
   tipoAcesso: string;
+  email: string;
 }
 
 export interface ClientResponse {

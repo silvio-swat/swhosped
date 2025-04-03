@@ -7,9 +7,13 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Configura o container do class-validator para usar o container do Nest
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });  
 
   // Cuida do Pipe de validações
   app.useGlobalPipes(

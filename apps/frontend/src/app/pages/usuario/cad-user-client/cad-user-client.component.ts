@@ -1,22 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { InputMaskModule } from 'primeng/inputmask';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { NotificationService  } from '../../../core/notifications/notification.service';
-import { UserClientService  } from './../../services/user-client.service';
-import { CreateUserClientDto } from './../../interfaces/user-client.interface';
+import { NotificationService  } from '../../../../core/notifications/notification.service';
+import { UserClientService  } from '../../../services/user-client.service';
+import { CreateUserClientDto } from '../../../interfaces/user-client.interface';
+import { Router } from '@angular/router';
 
-/**
- * Componente responsável pelo cadastro de usuários e clientes
- * 
- * @remarks
- * Este componente implementa um formulário de cadastro com validações básicas
- * e integração com o serviço de usuários.
- */
 @Component({
-  standalone: true,  
+  selector: 'app-cad-user-client',
   imports: [
     CardModule,
     FormsModule, // Adicione o FormsModule aqui
@@ -24,11 +18,10 @@ import { CreateUserClientDto } from './../../interfaces/user-client.interface';
     ButtonModule,
     CommonModule
   ],  
-  selector: 'app-cadastro-usuario',
-  templateUrl: './cadastro-usuario.component.html',
-  styleUrls: ['./cadastro-usuario.component.css']
+  templateUrl: './cad-user-client.component.html',
+  styleUrl: './cad-user-client.component.css'
 })
-export class CadastroUsuarioComponent {
+export class CadUserClientComponent {
   /**
    * Estado do formulário usando Signals
    * 
@@ -43,6 +36,7 @@ export class CadastroUsuarioComponent {
     telefone: '',
     cpf: '',
   });
+  private router = inject(Router);
 
   constructor(
     private notify: NotificationService,
@@ -100,16 +94,18 @@ export class CadastroUsuarioComponent {
         next: (response) => {
           console.log('Usuário cadastrado com sucesso!', response);
           this.notify.notify('success', 'Cadastro realizado com sucesso!');
+          this.router.navigate(['login']);          
         },
         error: (error) => {
-          //Exibe todas as mensagens de erro de validação do Backend
-          if(error.error.message !== undefined && error.error.message.length > 0) {
-            for(let i = 0; i < error.error.message.length; i++) {
-              this.notify.notify('error', error.error.message[i]);
-            }
+        //Exibe todas as mensagens de erro de validação do Backend
+        if(Array.isArray(error.error.message) && error.error.message.length > 0) {
+          for(let i = 0; i < error.error.message.length; i++) {
+            this.notify.notify('error', error.error.message[i]);
           }
-          // Exibe erro no console caso não seja erro de validação de campos
-          console.error('Erro ao cadastrar usuário', error);
+          return;
+        }
+
+        this.notify.notify('error', error.error.message); 
         }
     });    
   }

@@ -2,11 +2,11 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { PaginatedReservaResult } from '../../interfaces/reserva.interface'; 
-import { ReservaAdminPesquisaComponent } from '../../components/reserva/reserva-admin-pesquisa/reserva-admin-pesquisa.component';
-import { ReservaAdminListComponent } from '../../components/reserva/reserva-admin-list/reserva-admin-list.component';
-import { ReservaService } from '../../services/reserva.service'; 
-import { NotificationService  } from '../../../core/notifications/notification.service';
+import { PaginatedReservaResult } from '../../../interfaces/reserva.interface'; 
+import { ReservaAdminPesquisaComponent } from '../../../components/reserva/reserva-admin-pesquisa/reserva-admin-pesquisa.component';
+import { ReservaAdminListComponent } from '../../../components/reserva/reserva-admin-list/reserva-admin-list.component';
+import { ReservaService } from '../../../services/reserva.service'; 
+import { NotificationService  } from '../../../../core/notifications/notification.service';
 
 @Component({
   selector: 'app-reserva-admin',

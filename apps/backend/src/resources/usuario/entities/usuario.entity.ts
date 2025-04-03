@@ -6,6 +6,9 @@ export class Usuario {
   @PrimaryKey()
   id!: number;
 
+  @Property({ nullable: true })
+  email?: string;  
+
   @Property()
   nomeUsuario!: string;
 

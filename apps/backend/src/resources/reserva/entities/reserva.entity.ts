@@ -32,10 +32,10 @@ export class Reserva {
   @Enum(() => StatusReserva)
   status!: StatusReserva;
 
-  @Property({ default: 'now()' })
+  @Property({ default: 'now()' , nullable: true } )
   createdAt: Date = new Date();
 
-  @Property({ onUpdate: () => new Date() })
+  @Property({ onUpdate: () => new Date(), nullable: true })
   updatedAt: Date = new Date();  
 }
 

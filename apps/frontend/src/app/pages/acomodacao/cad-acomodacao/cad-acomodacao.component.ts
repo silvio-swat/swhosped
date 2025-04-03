@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, signal, OnDestroy, ViewChild, Input, OnInit } from '@angular/core';
+import { Component, signal, OnDestroy, ViewChild, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
@@ -10,20 +10,20 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { AcomodacaoService, AcomodacaoStateService } from '../../services/acomodacao.service';
-import { NotificationService } from '../../../core/notifications/notification.service';
-import { CreateAcomodacaoDto, TipoAcomodacao, StatusAcomodacao, AcomodacaoResponse } from './../../interfaces/acomodacao.interface';
+import { AcomodacaoService, AcomodacaoStateService } from '../../../services/acomodacao.service';
+import { NotificationService } from '../../../../core/notifications/notification.service';
+import { CreateAcomodacaoDto, TipoAcomodacao, StatusAcomodacao, AcomodacaoResponse } from './../../../interfaces/acomodacao.interface';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
-import { ImageCacheService } from '../../services/image-cache.service';
-import { CepService } from '../../services/cep.service';
-import { Endereco } from '../../interfaces/endereco.interface';
-import { GeocodingService } from '../../services/geocoding.service';
+import { ImageCacheService } from '../../../services/image-cache.service';
+import { CepService } from '../../../services/cep.service';
+import { Endereco } from '../../../interfaces/endereco.interface';
+import { GeocodingService } from '../../../services/geocoding.service';
 import { TooltipModule } from 'primeng/tooltip';
-import { TipoLogradouroService } from '../../services/tipo-logradouro.service';
+import { TipoLogradouroService } from '../../../services/tipo-logradouro.service';
 import { race, timer, of, Subject } from 'rxjs';
 import { catchError, finalize, map, takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -94,6 +94,8 @@ export class CadAcomodacaoComponent implements OnDestroy, OnInit {
   acomodacaoOriginal: CreateAcomodacaoDto | null = null;  
 
   files = signal<File[]>([]);
+
+    private router = inject(Router);
 
   constructor(
     private acomodacaoService: AcomodacaoService,
@@ -367,6 +369,7 @@ private isSameFile(a: File, b: File): boolean {
         this.imageCache.clearCache(); // Limpa o cache após envio bem-sucedido
         this.acomodacao.set({ ...acomodacaoData, imagens: [] }); // Reseta o campo imagens
         this.resetForm();
+        this.router.navigate(['/admin']);
       },
       error: (error) => {
         this.notificationService.notify('error', 'Erro ao cadastrar acomodação.');
@@ -375,6 +378,7 @@ private isSameFile(a: File, b: File): boolean {
           for(let i = 0; i < error.error.message.length; i++) {
             this.notificationService.notify('error', error.error.message[i]);
           }
+          return;
         }
         this.notificationService.notify('error', error.error.message);    
       }
@@ -395,9 +399,7 @@ private isSameFile(a: File, b: File): boolean {
         this.notificationService.notify('success', 'Acomodação atualizada com sucesso!');
         this.imageCache.clearCache();
         this.resetForm();
-        
-        // Opcional: Navegar para outra rota após sucesso
-        // this.router.navigate(['/acomodacoes']);
+        this.router.navigate(['/admin']);
       },
       error: (error) => {
         this.notificationService.notify('error', 'Erro ao atualizar acomodação');
@@ -407,6 +409,7 @@ private isSameFile(a: File, b: File): boolean {
             error.error.message.forEach((msg: string) => {
               this.notificationService.notify('error', msg);
             });
+            return;
           } else {
             this.notificationService.notify('error', error.error.message);
           }

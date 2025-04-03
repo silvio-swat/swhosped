@@ -1,14 +1,18 @@
 import { provideRouter, Route, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
-import { CadastroUsuarioComponent } from './pages/cadastro-usuario/cadastro-usuario.component';
-import { CadAcomodacaoComponent } from './pages/cad-acomodacao/cad-acomodacao.component';
-import { ReservaComponent } from './pages/reserva-form/reserva-form.component';
-import { ReservaClienteComponent } from './pages/reserva-cliente/reserva-cliente.component';
+import { CadAcomodacaoComponent } from './pages/acomodacao/cad-acomodacao/cad-acomodacao.component';
+import { ReservaComponent } from './pages/reserva/reserva-form/reserva-form.component';
+import { ReservaClienteComponent } from './pages/reserva/reserva-cliente/reserva-cliente.component';
 
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { ReservaAdminComponent } from './pages/reserva-admin/reserva-admin.component';
+import { ReservaAdminComponent } from './pages/reserva/reserva-admin/reserva-admin.component';
+import { LoginComponent } from './pages/usuario/login/login.component'; 
+
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { CadUserClientComponent } from './pages/usuario/cad-user-client/cad-user-client.component';
 
 
 export const appRoutes: Route[] = [
@@ -16,15 +20,17 @@ export const appRoutes: Route[] = [
     { path: '', component: PublicLayoutComponent,
         children: [
             { path: '', component: HomeComponent },
-            { path: 'cad-usuario', component: CadastroUsuarioComponent },    
+            { path: 'cad-usuario', component: CadUserClientComponent },    
+            { path: 'login', component: LoginComponent },            
 
             { path: 'reservar', component: ReservaComponent },               
-            { path: 'reserva-cliente', component: ReservaClienteComponent },
+            { path: 'reserva-cliente', component: ReservaClienteComponent }
             // outras rotas públicas
-
         ]        
      },               
-    { path: 'admin', component: AdminLayoutComponent,
+    { path: 'admin',
+      component: AdminLayoutComponent,
+      canActivate: [AuthGuard, AdminGuard], // Protege toda a rota /admin
         children: [
             { path: '', component: AdminDashboardComponent },
             { path: 'cad-acomodacao',     component: CadAcomodacaoComponent },

@@ -1,0 +1,76 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Login</h3>
+      
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+          <input 
+            type="email"
+            id="email" 
+            pInputText
+            [(ngModel)]="credentials().email" 
+            name="email"
+            class="p-inputtext p-2 w-full border rounded-md"
+            required 
+            placeholder="Digite seu e-mail"
+          />
+        </div>
+        
+        <!-- Senha -->
+        <div>
+          <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+          <input 
+            type="password"
+            id="senha"
+            pInputText
+            [(ngModel)]="credentials().senha"
+            name="senha"
+            class="p-inputtext p-2 w-full border rounded-md"
+            required
+            placeholder="Digite sua senha"
+          />
+        </div>
+        
+        <!-- Lembrar de mim e Esqueci a senha -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input 
+              id="rememberMe"
+              type="checkbox"
+              [(ngModel)]="credentials().lembrar"
+              name="lembrar"
+              class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            />
+            <label for="rememberMe" class="ml-2 block text-sm text-gray-700">Lembrar de mim</label>
+          </div>
+          <div>
+            <a href="#" class="text-sm text-primary-600 hover:text-primary-500" (click)="onForgotPassword()">Esqueci a senha</a>
+          </div>
+        </div>
+        
+        <!-- Botão de Envio -->
+        <div>
+          <button 
+            pButton 
+            type="submit" 
+            label="Entrar" 
+            class="p-button-lg w-full"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <i class="pi pi-spinner pi-spin mr-2"></i>
+            }
+            
+          </button>
+        </div>
+        
+        <!-- Link para cadastro -->
+        <div class="text-center text-sm text-gray-500">
+          Não tem uma conta? 
+          <a routerLink="/cadastro" class="text-primary-600 hover:text-primary-500 font-medium">Cadastre-se</a>
+        </div>
+      </form>
+    </div>
+  </div>

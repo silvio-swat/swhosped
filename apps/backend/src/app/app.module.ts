@@ -10,6 +10,8 @@ import { ReservaModule } from './../resources/reserva/reserva.module';
 import { UserClientModule } from '../resources/user-client/user-client.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +30,11 @@ import { join } from 'path';
         redirect: false,
       },
     }),
+    ConfigModule.forRoot({
+      isGlobal: true, // Torna as variáveis disponíveis em todos os módulos
+      envFilePath: '/.env', // Caminho para o arquivo .env
+    }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

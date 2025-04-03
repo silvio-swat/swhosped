@@ -210,6 +210,16 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
         "nome_usuario": {
           "name": "nome_usuario",
           "type": "varchar(255)",
@@ -442,7 +452,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 6,
           "default": "'now()'",
           "mappedType": "datetime"
@@ -453,7 +463,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 6,
           "mappedType": "datetime"
         }
@@ -462,7 +472,7 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "reserva_acomodacao_id_data_check_in_data_check_out_unique",
+          "keyName": "UQ_acomodacao_datas",
           "columnNames": [
             "acomodacao_id",
             "data_check_in",
@@ -471,7 +481,10 @@
           "composite": true,
           "constraint": true,
           "primary": false,
-          "unique": true
+          "unique": true,
+          "options": {
+            "message": "Já existe uma reserva para esta acomodação no período selecionado"
+          }
         },
         {
           "keyName": "reserva_pkey",

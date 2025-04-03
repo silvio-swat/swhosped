@@ -1,6 +1,8 @@
 // create-user-client.dto.ts
 import { IsString, IsEmail, IsNotEmpty, IsEnum, IsPhoneNumber, IsStrongPassword } from 'class-validator';
-import { TipoAcesso } from './../../usuario/entities/usuario.entity';
+import { Usuario, TipoAcesso } from './../../usuario/entities/usuario.entity';
+import { Cliente } from './../../cliente/cliente.entity';
+import { IsUnique } from './unique-validator';
 
 export class CreateUserClientDto {
   // Dados do usuário
@@ -42,6 +44,9 @@ export class CreateUserClientDto {
   @IsEmail({}, { 
     message: 'Por favor, forneça um endereço de e-mail válido' 
   })
+  @IsUnique(Usuario, 'email', {
+    message: 'Este e-mail já está cadastrado',
+  })  
   email: string;
 
   @IsPhoneNumber('BR', { 
@@ -52,6 +57,9 @@ export class CreateUserClientDto {
   @IsString()
   @IsNotEmpty({
     message: 'Por favor, preencha o CPF!',
+  })
+  @IsUnique(Cliente, 'cpf', {
+    message: 'Este CPF já está cadastrado',
   })
   cpf: string;
 }

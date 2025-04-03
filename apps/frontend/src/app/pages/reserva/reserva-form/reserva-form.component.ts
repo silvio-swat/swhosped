@@ -5,13 +5,15 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
-import { AcomodacaoResponse } from '../../interfaces/acomodacao.interface';
-import { Reserva } from '../../interfaces/reserva.interface';
-import { ReservaService } from '../../services/reserva.service';
+import { AcomodacaoResponse } from '../../../interfaces/acomodacao.interface';
+import { Reserva } from '../../../interfaces/reserva.interface';
+import { ReservaService } from '../../../services/reserva.service';
 import { MessageService } from 'primeng/api';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BackendService } from '../../services/backend.service';
-import { NotificationService  } from '../../../core/notifications/notification.service';
+import { BackendService } from '../../../services/backend.service';
+import { NotificationService  } from '../../../../core/notifications/notification.service';
+import { UserResponse } from '../../../interfaces/user-client.interface';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-reserva',
@@ -46,11 +48,12 @@ export class ReservaComponent implements OnInit {
     }
   });
 
+
   
   private reservaService = inject(ReservaService);
   private messageService = inject(MessageService);
   private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
+  authService = inject(AuthService);  
   private imgPath: string;
   countImagens: number;  
 
@@ -64,7 +67,8 @@ export class ReservaComponent implements OnInit {
   minDate: Date = new Date();
   maxDate: Date = new Date(new Date().setFullYear(this.minDate.getFullYear() + 1));
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.setUserData();
     // Recupera os dados de duas formas diferentes para garantir
     const state = this.router.getCurrentNavigation()?.extras.state || history.state;
 
@@ -79,7 +83,24 @@ export class ReservaComponent implements OnInit {
       });
     } else {
       console.error('Nenhuma acomodação encontrada no estado da navegação');
-      this.router.navigate(['/acomodacoes']);
+      this.router.navigate(['/']);
+    }
+  }
+
+  async setUserData() : Promise<void> {
+    const usuario = this.authService.currentUser();
+    if(usuario) {
+      const userCliente = usuario.cliente;
+      this.reserva.update(reservaAtual => ({
+      ...reservaAtual,
+      cliente: {
+        ...reservaAtual.cliente,
+        nomeCompleto: userCliente?.nomeCompleto ?? '',
+        email: usuario?.email ?? '',
+        telefone: userCliente?.telefone ?? '',
+        cpf: userCliente?.cpf
+      }
+      }));
     }
   }
 
@@ -148,7 +169,7 @@ prevImage(): void {
           summary: 'Sucesso',
           detail: 'Reserva realizada com sucesso!'
         });
-        this.router.navigate(['/reservas', reservaCriada.id]);
+        this.router.navigate(['/reserva-cliente']);
       },
       error: (error) => {
         //Exibe todas as mensagens de erro de validação do Backend
@@ -156,6 +177,7 @@ prevImage(): void {
           for(let i = 0; i < error.error.message.length; i++) {
             this.notify.notify('error', error.error.message[i]);
           }
+          return;
         }
 
         this.notify.notify('error', error.error.message);        

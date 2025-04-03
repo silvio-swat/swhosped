@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { CreateUserClientDto } from './dto/create-user-client.dto';
 // import { UpdateUserClientDto } from './dto/update-user-client.dto';
@@ -18,11 +19,14 @@ export class UserClientService {
   ) {}
 
   async createUserAndClient(createDto: CreateUserClientDto) {
+    // Adiciona o EntityManager ao DTO para ser usado no validador
+    (createDto as any).em = this.em;    
     // Iniciar transação
     return this.em.transactional(async (em) => {
       // Criar usuário
       const user = em.create(Usuario, {
-        nomeUsuario: createDto.nomeUsuario,
+        nomeUsuario: createDto.nomeCompleto,
+        email: createDto.email,        
         senha: await bcrypt.hash(createDto.senha, 10),
         tipoAcesso: createDto.tipoAcesso,
       });
