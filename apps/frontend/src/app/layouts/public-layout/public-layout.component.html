@@ -26,17 +26,6 @@
             </nav>
           </div>
           
-          <!-- <div *ngIf="authService.currentUser() as user" class="bg-blue-50 p-4 mb-6 rounded-lg">
-            <div class="flex justify-between items-center">
-                <h3 class="text-xl font-semibold text-blue-800">
-                    Bem-vindo, {{ user.email }}!
-                </h3>
-                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                    {{ user.tipoAcesso }}
-                </span>
-            </div>
-         </div>     -->
-          
           <!-- Botões de Ações -->
           <!-- Controles de Acesso -->
           <div class="flex flex-col lg:flex-row lg:space-x-2 space-y-2 lg:space-y-0 mr-2">
@@ -48,7 +37,6 @@
                 class="p-button-sm p-button-outlined p-button-rounded hidden md:inline-flex">
                </button>
             }
-
 
             @if(authService.currentUser() && authService.currentUser()) {
               <button pButton pRipple 
@@ -66,8 +54,6 @@
               </button>
             }
             
-
-            
             <button pButton pRipple 
                     icon="pi pi-user-plus" 
                     label="Cadastro" 
@@ -82,13 +68,6 @@
           </button>                
 
         </div>
-
-        <!-- Botão Menu Responsivo -->
-        <!-- <button class="lg:hidden" (click)="toggleMenu()">
-          <i class="pi pi-bars text-2xl"></i>
-        </button>         -->
-      
-        <!-- Menu Responsivo (Dropdown) -->
 
   <!-- Menu Mobile -->
   <div *ngIf="menuAberto" class="lg:hidden bg-blue-700 pb-4 px-4 rounded-b-lg shadow-lg">
@@ -125,7 +104,6 @@
   </div>
 </div>
 </header>
-
 
     <!-- Main Content -->
     <main class="py-8">

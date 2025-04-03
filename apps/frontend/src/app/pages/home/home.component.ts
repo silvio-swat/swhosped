@@ -8,10 +8,11 @@ import { AcomodacaoListComponent } from '../../components/acomodacao/acomodacao-
 import { AcomodacaoService } from '../../services/acomodacao.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [ButtonModule, CommonModule, AcomodacaoFiltrosPesquisaComponent, AcomodacaoListComponent],
+  imports: [ButtonModule, CommonModule, RouterModule, AcomodacaoFiltrosPesquisaComponent, AcomodacaoListComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
