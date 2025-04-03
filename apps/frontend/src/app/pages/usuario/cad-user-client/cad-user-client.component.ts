@@ -120,15 +120,67 @@ export class CadUserClientComponent {
    */
   private isFormValid(): boolean {
     const form = this.user();
+  
+    // Validação do Nome Completo
+    if (!form.nomeCompleto.trim()) {
+      this.notify.notify('error', 'O nome completo é obrigatório!');
+      return false;
+    }
+  
+    // Validação do Email
+    if (!form.email.trim()) {
+      this.notify.notify('error', 'O email é obrigatório!');
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      this.notify.notify('error', 'O email informado é inválido!');
+      return false;
+    }
+  
+    // Validação da Senha
     if (!form.senha) {
-      this.notify.notify('error','Insira uma senha válida!');
+      this.notify.notify('error', 'A senha é obrigatória!');
       return false;
     }
-    
+    if (form.senha.length < 6) {
+      this.notify.notify('error', 'A senha deve ter pelo menos 6 caracteres!');
+      return false;
+    }
+  
+    // Validação de Confirmação de Senha
+    if (!form.confirmarSenha) {
+      this.notify.notify('error', 'A confirmação de senha é obrigatória!');
+      return false;
+    }
     if (form.senha !== form.confirmarSenha) {
-      this.notify.notify('error','As senhas não coincidem!');
+      this.notify.notify('error', 'As senhas não coincidem!');
       return false;
     }
+  
+    // Validação do Telefone
+    if (!form.telefone.trim()) {
+      this.notify.notify('error', 'O telefone é obrigatório!');
+      return false;
+    }
+    const telefoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+    if (!telefoneRegex.test(form.telefone)) {
+      this.notify.notify('error', 'O telefone informado é inválido!');
+      return false;
+    }
+  
+    // Validação do CPF
+    if (!form.cpf.trim()) {
+      this.notify.notify('error', 'O CPF é obrigatório!');
+      return false;
+    }
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    if (!cpfRegex.test(form.cpf)) {
+      this.notify.notify('error', 'O CPF informado é inválido!');
+      return false;
+    }
+  
     return true;
   }
+  
 }

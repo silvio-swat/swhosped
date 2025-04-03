@@ -103,7 +103,7 @@ export class AcomodacaoService {
         if (first.startsWith('http://') || first.startsWith('https://')) {
           imgLinks.push(first);
         } else {
-          const linkConcatenado =  this.imgPath + first.replace('apps/backend', '');
+          const linkConcatenado =  this.imgPath + first.replace('apps/backend/', '');
           imgLinks.push(linkConcatenado);
         }
       }
@@ -111,6 +111,21 @@ export class AcomodacaoService {
     }
     return [];
   }     
+
+  // Dentro da classe AcomodacaoService
+  getEnderecoCompleto(acomodacao: AcomodacaoResponse): string {
+    if(!acomodacao) {
+      return '';
+    }
+    // Monta o endereço com tipo de logradouro, logradouro, número e, se existir, o complemento
+    let endereco = `${acomodacao.tipoLogradouro} ${acomodacao.logradouro}, ${acomodacao.numero}`;
+    if (acomodacao.complemento && acomodacao.complemento.trim() !== '') {
+      endereco += `, ${acomodacao.complemento}`;
+    }
+    // Acrescenta bairro, cidade, estado e CEP
+    endereco += ` - ${acomodacao.bairro}, ${acomodacao.cidade} - ${acomodacao.estado}, CEP: ${acomodacao.cep}`;
+    return endereco;
+  }  
 }
 
 // acomodacao-state.service.ts

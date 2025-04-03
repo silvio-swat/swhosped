@@ -177,8 +177,7 @@ buscarCoordenadas() {
 
   private enderecoEstaCompleto(): boolean {
     const ac = this.acomodacao();
-    // console.log('teste endereço completo para coordenadas');
-    // console.log(ac);
+
     return !!ac.logradouro && 
            !!ac.numero && 
            !!ac.bairro && 
@@ -340,6 +339,7 @@ private isSameFile(a: File, b: File): boolean {
  //------- Formulário - Postagem do mesmo
   async onSubmit() {
     const formData = new FormData();
+
     // Adiciona os dados do formulário
     const acomodacaoData = this.acomodacao();
     for (const key in acomodacaoData) {
@@ -347,6 +347,11 @@ private isSameFile(a: File, b: File): boolean {
         formData.append(key, (acomodacaoData as any)[key]);
       }
     }
+
+    // Validação antes de fazer o POST
+    if(!this.isFormValid()) {
+      return;
+    }    
   
     //Adiciona imagens ao FormData
     this.imageCache.getImages().forEach((file, index) => {
@@ -457,33 +462,84 @@ private isSameFile(a: File, b: File): boolean {
 
   private isFormValid(): boolean {
     const form = this.acomodacao();
-    
-    if (!form.descricao || form.descricao.length < 10) {
-      this.notificationService.notify('error', 'A descrição deve ter pelo menos 10 caracteres');
+  
+    // Validação do tipo de acomodação
+    if (!form.tipo) {
+      this.notificationService.notify('error', 'Selecione o tipo de acomodação.');
       return false;
     }
-
-    if (!form.logradouro) {
-      this.notificationService.notify('error', 'O logradouro é obrigatório');
+  
+    // Validação da descrição (mínimo 10 caracteres)
+    if (!form.descricao || form.descricao.trim().length < 10) {
+      this.notificationService.notify('error', 'A descrição deve ter pelo menos 10 caracteres.');
       return false;
     }
-
+  
+    // Validação da capacidade (entre 1 e 20 pessoas)
+    if (!form.capacidade || form.capacidade < 1 || form.capacidade > 40) {
+      this.notificationService.notify('error', 'A capacidade deve estar entre 1 e 40 pessoas.');
+      return false;
+    }
+  
+    // Validação do endereço
+    if (!form.tipoLogradouro) {
+      this.notificationService.notify('error', 'Selecione o tipo de logradouro.');
+      return false;
+    }
+    if (!form.logradouro || form.logradouro.trim() === '') {
+      this.notificationService.notify('error', 'O logradouro é obrigatório.');
+      return false;
+    }
+    if (!form.numero || form.numero.trim() === '') {
+      this.notificationService.notify('error', 'O número é obrigatório.');
+      return false;
+    }
+    if (!form.bairro || form.bairro.trim() === '') {
+      this.notificationService.notify('error', 'O bairro é obrigatório.');
+      return false;
+    }
+    if (!form.cidade || form.cidade.trim() === '') {
+      this.notificationService.notify('error', 'A cidade é obrigatória.');
+      return false;
+    }
+    if (!form.estado || form.estado.trim() === '') {
+      this.notificationService.notify('error', 'O estado é obrigatório.');
+      return false;
+    }
+  
+    // Validação do CEP (deve ter 8 dígitos numéricos)
     if (!form.cep || form.cep.replace(/\D/g, '').length !== 8) {
-      this.notificationService.notify('error', 'CEP inválido');
+      this.notificationService.notify('error', 'CEP inválido.');
       return false;
     }
-
+  
+    // Validação das coordenadas (se estiverem em 0, provavelmente não foram preenchidas)
+    if (form.latitude === 0 && form.longitude === 0) {
+      this.notificationService.notify('error', 'Não foi possível obter as coordenadas da localização.');
+      return false;
+    }
+  
+    // Validação do preço por noite (deve ser maior que 0)
+    if (form.precoPorNoite == null || form.precoPorNoite <= 0) {
+      this.notificationService.notify('error', 'Informe um preço por noite válido.');
+      return false;
+    }
+  
+    // Validação do status da acomodação
+    if (!form.status) {
+      this.notificationService.notify('error', 'Selecione o status da acomodação.');
+      return false;
+    }
+  
+    // Se todas as validações passaram, o formulário é válido
     return true;
   }
-
-
 
   private async loadImagens(acomodacao: any) {
     if (acomodacao.imagens && acomodacao.imagens.length > 0) {
       try {
         // 1. Primeiro converte os caminhos para URLs completas
         const imageUrls = this.acomodacaoService.getArrayImageUrl(acomodacao);
-        console.log('URLs completas das imagens:', imageUrls);
   
         // 2. Converte URLs para File objects
         const files: File[] = [];
@@ -531,3 +587,4 @@ private isSameFile(a: File, b: File): boolean {
   } 
 
 }
+

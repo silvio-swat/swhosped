@@ -1,0 +1,12 @@
+.map-container {
+    height: 300px; /* Altura fixa é essencial */
+    width: 100%;
+    z-index: 0; /* Garante que o mapa fique visível */
+}
+  
+  /* Corrija os ícones do Leaflet */
+.leaflet-marker-icon {
+    background-image: url('https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+ }

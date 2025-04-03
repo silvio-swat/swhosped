@@ -9,11 +9,12 @@ import { AcomodacaoResponse } from '../../../interfaces/acomodacao.interface';
 import { Reserva } from '../../../interfaces/reserva.interface';
 import { ReservaService } from '../../../services/reserva.service';
 import { MessageService } from 'primeng/api';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { BackendService } from '../../../services/backend.service';
 import { NotificationService  } from '../../../../core/notifications/notification.service';
-import { UserResponse } from '../../../interfaces/user-client.interface';
 import { AuthService } from '../../../services/auth.service';
+import { MapaComponent } from '../../../components/mapa/mapa.component';
+import { AcomodacaoService } from '../../../services/acomodacao.service';
 
 @Component({
   selector: 'app-reserva',
@@ -24,14 +25,16 @@ import { AuthService } from '../../../services/auth.service';
     ButtonModule,
     CalendarModule,
     InputMaskModule,
-    InputTextModule
+    InputTextModule,
+    MapaComponent
   ],
   templateUrl: './reserva-form.component.html',
   styleUrls: ['./reserva-form.component.css']
 })
-export class ReservaComponent implements OnInit {
+export class ReservaFormComponent implements OnInit {
   
   acomodacaoSelecionada!: AcomodacaoResponse;
+  enderecoCompleto = '';
 
   reserva = signal<Reserva>({
     id: 0,
@@ -58,7 +61,8 @@ export class ReservaComponent implements OnInit {
   countImagens: number;  
 
   constructor(private backendSrv: BackendService,
-    private notify: NotificationService
+    private notify: NotificationService,
+    private acomodacaoSrv: AcomodacaoService
   ) {
     this.imgPath = this.backendSrv.getServerUrl();
     this.countImagens = 0;
@@ -66,16 +70,25 @@ export class ReservaComponent implements OnInit {
 
   minDate: Date = new Date();
   maxDate: Date = new Date(new Date().setFullYear(this.minDate.getFullYear() + 1));
+  latitude  = 0;
+  longitude = 0;
 
   async ngOnInit(): Promise<void> {
     await this.setUserData();
     // Recupera os dados de duas formas diferentes para garantir
     const state = this.router.getCurrentNavigation()?.extras.state || history.state;
-
+    
     if (state?.['acomodacaoSelecionada']) {
       this.acomodacaoSelecionada = state['acomodacaoSelecionada'];
+      this.enderecoCompleto = this.acomodacaoSrv.getEnderecoCompleto(this.acomodacaoSelecionada);
       this.countImagens = this.acomodacaoSelecionada.imagens ? this.acomodacaoSelecionada.imagens?.length : 0;
       
+      // CONVERTE LATITUDE E LONGITUDE PARA NÚMERO (SE NECESSÁRIO)
+      if (this.acomodacaoSelecionada.latitude && this.acomodacaoSelecionada.longitude) {
+        this.latitude = Number(this.acomodacaoSelecionada.latitude);
+        this.longitude = Number(this.acomodacaoSelecionada.longitude);
+      } 
+
       this.reserva.set({
         ...this.reserva(),
         acomodacao: this.acomodacaoSelecionada,
@@ -199,4 +212,44 @@ prevImage(): void {
       return this.imgPath + imagem.replace('apps/backend', '');
     }
   } 
+
+  isFormValid(): boolean {
+    const { dataCheckIn, dataCheckOut, cliente } = this.reserva();
+    let isValid = true;
+  
+    if (!dataCheckIn) {
+      this.notify.notify('error', 'A data de check-in é obrigatória.');
+      isValid = false;
+    }
+    
+    if (!dataCheckOut) {
+      this.notify.notify('error', 'A data de check-out é obrigatória.');
+      isValid = false;
+    } else if (dataCheckIn && dataCheckOut <= dataCheckIn) {
+      this.notify.notify('error', 'A data de check-out deve ser posterior à data de check-in.');
+      isValid = false;
+    }
+  
+    if (!cliente.nomeCompleto.trim()) {
+      this.notify.notify('error', 'O nome completo é obrigatório.');
+      isValid = false;
+    }
+  
+    if (!cliente.email.trim() || !/^[\w-.]+@[\w-]+\.[a-z]{2,4}$/i.test(cliente.email)) {
+      this.notify.notify('error', 'Informe um e-mail válido.');
+      isValid = false;
+    }
+  
+    if (!cliente.telefone.trim() || !/^\(\d{2}\) \d{5}-\d{4}$/.test(cliente.telefone)) {
+      this.notify.notify('error', 'Informe um telefone válido no formato (99) 99999-9999.');
+      isValid = false;
+    }
+  
+    if (!cliente.cpf.trim() || !/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cliente.cpf)) {
+      this.notify.notify('error', 'Informe um CPF válido no formato 999.999.999-99.');
+      isValid = false;
+    }
+  
+    return isValid;
+  }
 }

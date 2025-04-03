@@ -1,6 +1,6 @@
 import { provideRouter, Route, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { CadAcomodacaoComponent } from './pages/acomodacao/cad-acomodacao/cad-acomodacao.component';
-import { ReservaComponent } from './pages/reserva/reserva-form/reserva-form.component';
+import { ReservaFormComponent } from './pages/reserva/reserva-form/reserva-form.component';
 import { ReservaClienteComponent } from './pages/reserva/reserva-cliente/reserva-cliente.component';
 
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
@@ -23,7 +23,7 @@ export const appRoutes: Route[] = [
             { path: 'cad-usuario', component: CadUserClientComponent },    
             { path: 'login', component: LoginComponent },            
 
-            { path: 'reservar', component: ReservaComponent },               
+            { path: 'reservar', component: ReservaFormComponent },               
             { path: 'reserva-cliente', component: ReservaClienteComponent }
             // outras rotas públicas
         ]        

@@ -88,28 +88,21 @@ export class AcomodacaoService {
     const acomodacao = await this.em.findOneOrFail(Acomodacao, id);
     wrap(acomodacao).assign(updateDto);
   
+    // 1. Pegar todas as imagens atuais para deletar depois
     const currentImages = acomodacao.imagens || [];
-    let imagesToDelete: string[] = [];
+    
+    // 2. Limpar o array de imagens (todas serão substituídas)
+    acomodacao.imagens = [];
   
-    // Filtra imagens removidas
-    if (updateDto.imagensRemovidas) {
-      imagesToDelete = currentImages.filter(img => 
-        updateDto.imagensRemovidas.includes(img)
-      );
-      acomodacao.imagens = currentImages.filter(img => 
-        !updateDto.imagensRemovidas.includes(img)
-      );
-    }
-  
-    // Adiciona novas imagens
+    // 3. Adicionar apenas as novas imagens
     const newImagePaths = newFiles.map(file => file.path);
-    acomodacao.imagens = [...acomodacao.imagens, ...newImagePaths];
+    acomodacao.imagens = [...newImagePaths];
   
     await this.em.persistAndFlush(acomodacao);
   
-    // Remove fisicamente as imagens (opcional)
-    if (imagesToDelete.length > 0) {
-      await this.deleteImageFiles(imagesToDelete);
+    // 4. Remover fisicamente as imagens antigas (opcional)
+    if (currentImages.length > 0) {
+      await this.deleteImageFiles(currentImages);
     }
   
     return acomodacao;
