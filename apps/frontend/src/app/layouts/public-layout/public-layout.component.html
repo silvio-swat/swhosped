@@ -6,7 +6,7 @@
           <!-- Logo/Título e Menu Principal -->
           <div class="flex items-center space-x-8">
             <h1 class="text-2xl font-bold">
-              <a routerLink="/">Portal de Reservas</a>
+              <a routerLink="/">SWHosped - Portal de Reservas</a>
             </h1>
             
             <!-- Navegação Desktop -->
@@ -54,12 +54,14 @@
               </button>
             }
             
-            <button pButton pRipple 
-                    icon="pi pi-user-plus" 
-                    label="Cadastro" 
-                    routerLink="/cad-usuario" 
-                    class="p-button-sm p-button-success p-button-rounded hidden sm:inline-flex">
-            </button>
+            @if(!authService.currentUser()) {
+              <button pButton pRipple 
+                      icon="pi pi-user-plus" 
+                      label="Cadastro" 
+                      routerLink="/cad-usuario" 
+                      class="p-button-sm p-button-success p-button-rounded hidden sm:inline-flex">
+              </button>
+            }
           </div>
 
           <!-- Botão Menu Responsivo -->
