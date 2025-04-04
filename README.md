@@ -124,11 +124,6 @@ import { apiLinks } from '../shared/environment';
 const API_URL = apiLinks.mainUrl + 'api/user-client'; //Exemplo de uso
 ```
 
-```ts
-import { apiLinks } from '../shared/environment';
-const API_URL = apiLinks.mainUrl + 'api/user-client'; //Exemplo de uso
-```
-
 ### 1️⃣ Configurar GeoCogingService
 
 Edite o arquivo `/src/service/geocoding.service.ts`:
