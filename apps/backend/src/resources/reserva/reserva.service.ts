@@ -6,6 +6,7 @@ import { Cliente } from '../cliente/cliente.entity';
 import { Acomodacao } from '../acomodacao/entities/acomodacao.entity';
 import { FilterReservaDto } from '../reserva/dto/filtro-reserva.dto';
 import { PaginatedReservaResult } from './reserva.interface';
+import { FilterReservaAdminDto } from './dto/filtro-reserva-admin.dto';
 
 @Injectable()
 export class ReservaService {
@@ -130,7 +131,7 @@ export class ReservaService {
     };
   }
 
-  async findAllWithFiltersAdmin(query: FilterReservaDto): Promise<PaginatedReservaResult> {
+  async findAllWithFiltersAdmin(query: FilterReservaAdminDto): Promise<PaginatedReservaResult> {
     const page = query.page && query.page > 0 ? query.page : 1;
     const limit = query.limit && query.limit > 0 ? query.limit : 12;
     const offset = (page - 1) * limit;
@@ -153,9 +154,43 @@ export class ReservaService {
       qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
     }
 
-    if (query.telefone) {
-      qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
-    }    
+    if (query.status) {
+      qb.andWhere({ status: query.status });
+    }
+
+    // Filtro por período (dataInicio e dataFim)
+    if (query.dataInicio && query.dataFim) {
+      const dataInicio = new Date(query.dataInicio);
+      const dataFim = new Date(query.dataFim);
+      
+      qb.andWhere({
+        $or: [
+          // Reservas que começam e terminam dentro do período
+          { 
+            dataCheckIn: { $gte: dataInicio },
+            dataCheckOut: { $lte: dataFim }
+          },
+          // Reservas que começam antes mas terminam dentro do período
+          { 
+            dataCheckIn: { $lt: dataInicio },
+            dataCheckOut: { $gt: dataInicio, $lte: dataFim }
+          },
+          // Reservas que começam dentro mas terminam depois do período
+          { 
+            dataCheckIn: { $gte: dataInicio, $lt: dataFim },
+            dataCheckOut: { $gt: dataFim }
+          },
+          // Reservas que englobam todo o período
+          { 
+            dataCheckIn: { $lt: dataInicio },
+            dataCheckOut: { $gt: dataFim }
+          }
+        ]
+      });
+    }
+
+    // Ordenação padrão por data de criação (opcional)
+    qb.orderBy({ createdAt: 'DESC' });    
 
     // Obtendo os resultados e a contagem total
     const [data, totalItems] = await qb

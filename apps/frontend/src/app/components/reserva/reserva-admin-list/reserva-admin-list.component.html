@@ -63,11 +63,16 @@
                             {{ reserva.acomodacao.numero }} - {{ reserva.acomodacao.bairro }}, {{ reserva.acomodacao.cidade }}/{{ reserva.acomodacao.estado }} 
                             Cep: {{ reserva.acomodacao.cep }}
                         </p>
-                        
-                        <p class="text-xs text-gray-700">
-                            <span class="font-medium">Diária:</span>
-                            R$ {{ reserva.acomodacao.precoPorNoite | number:'1.2-2' }}
-                        </p>
+                        <p class="text-xs mt-2 flex space-x-4">
+                            <span class="text-blue-600">Diária: R$ {{ reserva.acomodacao.precoPorNoite }}</span>
+                            @if(reserva.acomodacao.capacidade > 1) {
+                              <span class="text-purple-600">{{ reserva.acomodacao.capacidade }} pessoas</span>
+                            } @else {
+                              <span class="text-purple-600">{{ reserva.acomodacao.capacidade }} pessoa</span>
+                            }
+                            <span class="text-green-600">{{ reserva.acomodacao.tipo }}</span>
+                          </p>          
+
                     </div>
                 </div>
             }

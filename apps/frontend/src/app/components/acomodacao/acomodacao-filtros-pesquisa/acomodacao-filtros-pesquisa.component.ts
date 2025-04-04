@@ -15,7 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 export class AcomodacaoFiltrosPesquisaComponent {
   filtro: FiltroAcomodacao = {};
   estadosBrasil: string[] = [];  
-  tiposAcomodacao: string[] = ['Casa', 'Apartamento', 'Hotel']; // Exemplo de tipos de acomodação
+  tiposAcomodacao: string[] = ['Casa', 'Apartamento', 'Quarto de Hotel']; // Exemplo de tipos de acomodação
 
 
   constructor(private globalParamsSrv: GlobalParamsService) {

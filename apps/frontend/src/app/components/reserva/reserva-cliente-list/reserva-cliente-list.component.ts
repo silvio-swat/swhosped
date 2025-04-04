@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
 import { Reserva, PaginatedReservaResult } from '../../../interfaces/reserva.interface'
-import { BackendService } from '../../../services/backend.service';
 import { ReservaService } from '../../../services/reserva.service';
 import { NotificationService } from '../../../../core/notifications/notification.service';
 // No seu componente (reserva-cliente-list.component.ts)
@@ -13,6 +12,9 @@ import { provideNgxMask } from 'ngx-mask';
 import { TelefonePipe } from './../../../shared/pipes'; // ajuste o caminho
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { apiLinks } from '../../../shared/environment';
+
+
 
 @Component({
   selector: 'app-reserva-cliente-list',
@@ -31,7 +33,6 @@ export class ReservaClienteListComponent {
   @Input() filtro: any = {};
 
   private router = inject(Router);
-  private backendSrv = inject(BackendService);
   private reservaService = inject(ReservaService);
   private notify = inject(NotificationService);
   private confirmationService = inject(ConfirmationService);
@@ -44,7 +45,7 @@ export class ReservaClienteListComponent {
       if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
         return firstImage;
       }
-      return this.backendSrv.getServerUrl() + firstImage.replace('apps/backend', '');
+      return apiLinks.mainUrl + firstImage.replace('apps/backend', '');
     }
     return 'assets/default-accommodation.jpg';
   }

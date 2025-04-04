@@ -18,8 +18,15 @@
         <p class="text-gray-400 mt-1 text-xs line-clamp-2">
           {{ obterEnderecoCompleto(acomodacao) }}
         </p>        
-        <p class="text-blue-600 mt-1">
-          R$ {{ acomodacao.precoPorNoite }} / noite
+        <p class="text-sm mt-2 flex space-x-4">
+          <span class="text-blue-600">Diária: R$ {{ acomodacao.precoPorNoite }}</span>
+          <span class="text-green-600">{{ acomodacao.status }}</span>
+          @if(acomodacao.capacidade > 1) {
+            <span class="text-purple-600">{{ acomodacao.capacidade }} pessoas</span>
+          } @else {
+            <span class="text-purple-600">{{ acomodacao.capacidade }} pessoa</span>
+          }
+          <span class="text-green-600">{{ acomodacao.tipo }}</span>
         </p>
       </div>
       <!-- Botões de Ação -->

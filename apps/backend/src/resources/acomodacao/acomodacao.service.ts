@@ -65,6 +65,10 @@ export class AcomodacaoService {
       qb.andWhere({ estado: query.estado });
     }
 
+    if(query.isPublic && query.isPublic === 'true') {
+      qb.andWhere({ status: 'Disponível' });      
+    }
+
     // Validação de datas
     if (query.checkin && query.checkout) {
       const checkin = new Date(query.checkin);

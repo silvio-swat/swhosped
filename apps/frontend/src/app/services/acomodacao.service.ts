@@ -15,13 +15,11 @@ import { apiLinks } from '../shared/environment';
 })
 export class AcomodacaoService {
   // private apiUrl = apiLinks.devLocal +'api/acomodacaos';
-  private apiUrl = apiLinks.devNetwork +'api/acomodacaos';
+  private apiUrl = apiLinks.mainUrl +'api/acomodacaos';
   imgPath: string;
 
-  constructor(private http: HttpClient,
-              private backendSrv: BackendService
-  ) {
-    this.imgPath = this.backendSrv.getServerUrl();
+  constructor(private http: HttpClient) {
+    this.imgPath = apiLinks.mainUrl;
   }
 
   createAcomodacao(formData: FormData): Observable<AcomodacaoResponse> {
@@ -128,7 +126,6 @@ export class AcomodacaoService {
 
 // acomodacao-state.service.ts
 import { BehaviorSubject } from 'rxjs';
-import { BackendService } from './backend.service';
 
 @Injectable({ providedIn: 'root' })
 export class AcomodacaoStateService {

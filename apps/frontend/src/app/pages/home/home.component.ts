@@ -32,7 +32,8 @@ export class HomeComponent {
   constructor(private acomodacaoService: AcomodacaoService) {}  
 
   aplicarFiltros(filtros: any) {
-    this.filtrosAtuais = filtros;  // Salva os filtros atuais    
+    filtros.isPublic = true;
+    this.filtrosAtuais = filtros;  // Salva os filtros atuais
     this.acomodacaoService.buscarAcomodacoesComFiltros(filtros).subscribe(
       (resultado) => {
         this.acomodacoesFiltradas = resultado;

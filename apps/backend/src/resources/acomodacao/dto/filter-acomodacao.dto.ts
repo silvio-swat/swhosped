@@ -1,4 +1,4 @@
-import { IsOptional, IsEnum, IsNumber, IsString, IsDateString } from 'class-validator';
+import { IsOptional, IsEnum, IsNumber, IsString, IsDateString, IsBoolean } from 'class-validator';
 import { TipoAcomodacao, StatusAcomodacao } from '../entities/acomodacao.entity';
 import { PaginationDto } from '../../../common/dtos/pagination.dto';
 import { Transform } from 'class-transformer';
@@ -47,5 +47,9 @@ export class FilterAcomodacaoDto extends PaginationDto{
   @IsOptional()
   @IsDateString()
   checkout?: string;
+
+  @IsOptional()
+  @IsString()
+  isPublic?: string;
 
 }

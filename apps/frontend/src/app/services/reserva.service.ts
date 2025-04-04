@@ -27,17 +27,6 @@ private apiUrl = apiLinks.devNetwork +'api/reservas';
     return this.http.get<Reserva[]>(this.apiUrl);
   }
 
-  // buscarReservasCliente(filtros: any): Observable<PaginatedReservaResult> {
-  //   let params = new HttpParams();
-  //   Object.keys(filtros).forEach((chave) => {
-  //     if (filtros[chave]) {
-  //       params = params.append(chave, filtros[chave]);
-  //     }
-  //   });
-
-  //   return this.http.get<PaginatedReservaResult>(this.apiUrl, { params });
-  // }    
-
   //Para Clientes (strict)
   buscarReservasCliente(filtros: ReservaFiltroPesquisa): Observable<PaginatedReservaResult> {
     const params = this.gerarParams(filtros);

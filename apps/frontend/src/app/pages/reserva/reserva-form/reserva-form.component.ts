@@ -10,11 +10,11 @@ import { Reserva } from '../../../interfaces/reserva.interface';
 import { ReservaService } from '../../../services/reserva.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { BackendService } from '../../../services/backend.service';
 import { NotificationService  } from '../../../../core/notifications/notification.service';
 import { AuthService } from '../../../services/auth.service';
 import { MapaComponent } from '../../../components/mapa/mapa.component';
 import { AcomodacaoService } from '../../../services/acomodacao.service';
+import { apiLinks } from '../../../shared/environment';
 
 @Component({
   selector: 'app-reserva',
@@ -60,11 +60,10 @@ export class ReservaFormComponent implements OnInit {
   private imgPath: string;
   countImagens: number;  
 
-  constructor(private backendSrv: BackendService,
-    private notify: NotificationService,
+  constructor(private notify: NotificationService,
     private acomodacaoSrv: AcomodacaoService
   ) {
-    this.imgPath = this.backendSrv.getServerUrl();
+    this.imgPath = apiLinks.mainUrl;
     this.countImagens = 0;
   }  
 

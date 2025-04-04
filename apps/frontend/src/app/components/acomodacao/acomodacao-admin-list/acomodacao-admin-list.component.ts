@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AcomodacaoService, AcomodacaoStateService } from '../../../services/acomodacao.service';
 import { AcomodacaoResponse, FiltroAcomodacao, PaginatedAcomodacaoResult } from '../../../interfaces/acomodacao.interface';
-import { BackendService } from '../../../services/backend.service';
+import { apiLinks } from '../../../shared/environment';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/notifications/notification.service';
 import { ConfirmationService } from 'primeng/api';
@@ -25,11 +25,10 @@ export class AcomodacaoAdminListComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
 
   constructor(private acomodacaoService: AcomodacaoService,
-              private backendSrv: BackendService,
               private acomodacaoState: AcomodacaoStateService,
               private notify: NotificationService
   ) {
-    this.imgPath = this.backendSrv.getServerUrl();
+    this.imgPath = apiLinks.mainUrl;
   }
 
   ngOnInit(): void {
@@ -157,6 +156,6 @@ export class AcomodacaoAdminListComponent implements OnInit {
   
   obterEnderecoCompleto(acomodacao: AcomodacaoResponse): string {
     return this.acomodacaoService.getEnderecoCompleto(acomodacao);
-  }  
+  }
    
 }

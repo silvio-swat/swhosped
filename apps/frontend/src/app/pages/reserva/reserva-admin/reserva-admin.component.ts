@@ -31,6 +31,9 @@ export class ReservaAdminComponent {
   ) {}  
 
   aplicarFiltros(filtros: any) {
+    console.log('teste para aplicar filtro de Reservas Admin');
+
+
     this.filtrosAtuais = filtros;  // Salva os filtros atuais    
     this.reservaService.buscarReservasAdmin(filtros).subscribe(
       (resultado) => {

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AcomodacaoService } from '../../../services/acomodacao.service';
 import { AcomodacaoResponse, FiltroAcomodacao, PaginatedAcomodacaoResult } from '../../../interfaces/acomodacao.interface';
-import { BackendService } from '../../../services/backend.service';
+import { apiLinks } from '../../../shared/environment';
 import { Router } from '@angular/router';
 
 
@@ -20,12 +20,9 @@ export class AcomodacaoListComponent implements OnInit{
   imgPath: string;
   private router = inject(Router); // Injeção alternativa
 
-
-
-  constructor(private acomodacaoService: AcomodacaoService,
-              private backendSrv: BackendService
+  constructor(private acomodacaoService: AcomodacaoService
   ) {
-    this.imgPath = this.backendSrv.getServerUrl();
+    this.imgPath = apiLinks.mainUrl;
   }
 
   ngOnInit(): void {
@@ -34,9 +31,8 @@ export class AcomodacaoListComponent implements OnInit{
 
   buscarAcomodacoes(filtros: FiltroAcomodacao, currentPage: number): void {
     // Altera a página atual e faz uma nova query
-    console.log('buscarAcomodacoes currentPage', currentPage);
-    console.log('buscarAcomodacoes filtros', filtros);
     filtros.page = currentPage > 0 ? currentPage : filtros.page;
+    filtros.isPublic = "true";
 
     this.acomodacaoService.buscarAcomodacoesComFiltros(filtros).subscribe(
       (resultado) => {

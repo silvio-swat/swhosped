@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
 import { Reserva, PaginatedReservaResult, ReservaFiltroAdminPesquisa } from '../../../interfaces/reserva.interface'
-import { BackendService } from '../../../services/backend.service';
+import { apiLinks } from '../../../shared/environment';
 import { ReservaService } from '../../../services/reserva.service';
 import { NotificationService } from '../../../../core/notifications/notification.service';
 // No seu componente (reserva-cliente-list.component.ts)
@@ -31,7 +31,6 @@ export class ReservaAdminListComponent implements OnInit  {
   @Input() filtro: ReservaFiltroAdminPesquisa = {};
 
   private router = inject(Router);
-  private backendSrv = inject(BackendService);
   private reservaService = inject(ReservaService);
   private notify = inject(NotificationService);
   private confirmationService = inject(ConfirmationService);
@@ -40,8 +39,6 @@ export class ReservaAdminListComponent implements OnInit  {
     this.carregarReservas(1);
   }
 
-
-
   // Obtém a URL da imagem da acomodação
   getAcomodacaoImageUrl(acomodacao: any): string {
     if (acomodacao.imagens && acomodacao.imagens.length > 0) {
@@ -49,7 +46,7 @@ export class ReservaAdminListComponent implements OnInit  {
       if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
         return firstImage;
       }
-      return this.backendSrv.getServerUrl() + firstImage.replace('apps/backend', '');
+      return apiLinks.mainUrl + firstImage.replace('apps/backend', '');
     }
     return 'assets/default-accommodation.jpg';
   }

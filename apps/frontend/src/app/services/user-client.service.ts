@@ -9,7 +9,7 @@ import { apiLinks } from '../shared/environment';
 })
 export class UserClientService {
 
-  private apiUrl = apiLinks.devNetwork  + 'api/user-client';
+  private apiUrl = apiLinks.mainUrl  + 'api/user-client';
 
   constructor(private http: HttpClient) {}
 

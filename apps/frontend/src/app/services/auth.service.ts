@@ -34,7 +34,7 @@ export interface LoginResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = apiLinks.devNetwork + 'api/auth';
+  private apiUrl = apiLinks.mainUrl + 'api/auth';
 
   // Usando Signal para estado reativo do usuário
   currentUser = signal<LoginResponse['usuario'] | null>(null);

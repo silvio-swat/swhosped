@@ -48,6 +48,7 @@ export interface CreateAcomodacaoDto {
     capacidade?: number;    // Quantidade de pessoas que a acomodação suporta
     page?: number;
     limit?: number;
+    isPublic?: string;
   }
   
   export enum TipoAcomodacao {

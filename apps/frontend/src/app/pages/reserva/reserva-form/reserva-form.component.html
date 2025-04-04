@@ -11,9 +11,15 @@
         </h4>
         <p class="text-gray-600 mt-2">{{ acomodacaoSelecionada.descricao }}</p>
         <p class="text-gray-600 mt-2">{{ enderecoCompleto }}</p>
-        <p class="text-lg text-blue-600 mt-4">
-          R$ {{ acomodacaoSelecionada.precoPorNoite | number:'1.2-2' }} / noite
-        </p>
+        <p class="text-xs mt-2 flex space-x-4">
+          <span class="text-blue-600">Diária: R$ {{ acomodacaoSelecionada.precoPorNoite }}</span>
+          @if(acomodacaoSelecionada.capacidade > 1) {
+            <span class="text-purple-600">{{ acomodacaoSelecionada.capacidade }} pessoas</span>
+          } @else {
+            <span class="text-purple-600">{{ acomodacaoSelecionada.capacidade }} pessoa</span>
+          }
+          <span class="text-green-600">{{acomodacaoSelecionada.tipo }}</span>
+        </p>   
       </div>
     </div> 
 
