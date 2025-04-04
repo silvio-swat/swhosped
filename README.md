@@ -105,25 +105,48 @@ Testar API: [http://localhost:3000](http://localhost:3000)
 
 ## 🎨 Configuração do Frontend (Angular 19)
 
-### 1️⃣ Configurar Backend no `environment.ts`
+### 1️⃣ Configurar a URL do Backend no `environment.ts`
 
 Edite o arquivo `/src/shared/environment.ts`:
 
 ```ts
-export const environment = {
-  devLocal: 'http://localhost:3000/',
-  devNetwork: 'http://backend.nest.local/',
-  production: 'https://www.swhosped-backend.com.br/',
-};
+export enum apiLinks {
+    devLocal   = 'http://localhost:3000/',
+    devNetwork = 'http://backend.swhosped.local/',
+    prodution  = '-',
+    // Define a URL de comunicação com backend Nest.js
+    mainUrl = devNetwork
+}
 ```
-
-### 2️⃣ Definir Ambiente no `backend.service.ts`
-
-No arquivo `src/app/services/backend.service.ts`, escolha o ambiente:
 
 ```ts
-const API_URL = environment.devLocal; // Ou devNetwork, production
+import { apiLinks } from '../shared/environment';
+const API_URL = apiLinks.mainUrl + 'api/user-client'; //Exemplo de uso
 ```
+
+```ts
+import { apiLinks } from '../shared/environment';
+const API_URL = apiLinks.mainUrl + 'api/user-client'; //Exemplo de uso
+```
+
+### 1️⃣ Configurar GeoCogingService
+
+Edite o arquivo `/src/service/geocoding.service.ts`:
+
+Caso tenha disponível, preencha uma API_KEY para o serviço de api do Google Maps (Localização de alta precisão)
+```ts
+    const API_KEY = 'SUA_CHAVE_GOOGLE';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(endereco)}&key=${API_KEY}`;
+```
+
+Caso tenha disponível, preencha uma API_KEY para o serviço de api do Mapbox (Localização de media precisãp)
+```ts
+    const API_KEY = 'SUA_CHAVE_Mapbox';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(endereco)}&key=${API_KEY}`;
+```
+
+Caso não tenha nenhuma das API-KEYs, será usado um serviço de baixa precisão da Nominatim
+
 
 ### 3️⃣ Iniciar o Servidor Angular
 
