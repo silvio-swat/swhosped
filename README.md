@@ -1,5 +1,4 @@
-# SWHosped - Sistema de Reservas para Hotéis e Pousadas com Angular 19 e NestJS 10
-
+# SWHosped - Gestão Integrada para Hospedagens com Angular e NestJS"
 
 
 Bem-vindo ao **SWHosped**, um monorepo NX utilizando **Angular 19** e **NestJS 10** para gerenciamento de hospedagens!
