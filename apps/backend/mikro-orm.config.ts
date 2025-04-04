@@ -17,7 +17,7 @@ export default defineConfig({
   highlighter: new SqlHighlighter(),
   logger: (message) => Logger.log(message),
   seeder: {
-    path: './src/database/seeders', // Caminho para a pasta onde os seeders estão localizados
+    path: './src/database/seeders/acomodacao', // Caminho para a pasta onde os seeders estão localizados
     defaultSeeder: 'AcomodacaoSeeder', // Nome da classe do seeder padrão
   },
 });

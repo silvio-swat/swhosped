@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AcomodacaoService } from './acomodacao.service';
+import { ReservaService } from './../reserva/reserva.service';
 import { AcomodacaoController } from './acomodacao.controller';
-import { AcomodacaoFactory } from './acomodacao.factory';
+import { AcomodacaoFactory } from './../../database/seeders/acomodacao/acomodacao.factory';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Acomodacao } from './entities/acomodacao.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { TipoLogradouroService } from '../../common/services/tipo-logradouro/tipo-logradouro.service'; 
+import { ReservaUtilsService } from '../../common/services/reserva-utils.service';
 
 @Module({
   imports: [
@@ -15,6 +17,6 @@ import { TipoLogradouroService } from '../../common/services/tipo-logradouro/tip
     }),
   ],
   controllers: [AcomodacaoController],
-  providers: [AcomodacaoService, AcomodacaoFactory, TipoLogradouroService],
+  providers: [AcomodacaoService, ReservaService, AcomodacaoFactory, TipoLogradouroService, ReservaUtilsService],
 })
 export class AcomodacaoModule {}

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAcomodacaoDto } from './dto/create-acomodacao.dto';
 import { UpdateAcomodacaoDto } from './dto/update-acomodacao.dto';
-import { AcomodacaoFactory } from './acomodacao.factory';
+import { AcomodacaoFactory } from './../../database/seeders/acomodacao/acomodacao.factory';
 
-// src/acomodacao/acomodacao.service.ts
-import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { EntityManager, raw, sql, wrap } from '@mikro-orm/postgresql';
 import { Acomodacao } from './entities/acomodacao.entity';
+import { Reserva, StatusReserva } from '../reserva/entities/reserva.entity';
 import { FilterAcomodacaoDto } from './dto/filter-acomodacao.dto';
 import { join } from 'path';
 import { unlink } from 'fs/promises';
@@ -42,7 +42,8 @@ export class AcomodacaoService {
     const limit = query.limit && query.limit > 0 ? query.limit : 21;
     const offset = (page - 1) * limit;
   
-    const qb = this.em.createQueryBuilder(Acomodacao);
+    // Definir alias explícito 'a' para a query principal
+    const qb = this.em.createQueryBuilder(Acomodacao, 'a');
   
     // Aplicação dos filtros dinamicamente
     if (query.tipo) {
@@ -62,6 +63,31 @@ export class AcomodacaoService {
     }
     if (query.estado) {
       qb.andWhere({ estado: query.estado });
+    }
+
+    // Validação de datas
+    if (query.checkin && query.checkout) {
+      const checkin = new Date(query.checkin);
+      const checkout = new Date(query.checkout);
+
+      if (isNaN(checkin.getTime()) || isNaN(checkout.getTime())) {
+        throw new BadRequestException('Formato de data inválido');
+      }
+
+      if (checkin >= checkout) {
+        throw new BadRequestException('Check-in deve ser anterior ao check-out');
+      }
+
+      // Subconsulta com referência ao alias 'a'
+      const subQuery = this.em.createQueryBuilder(Reserva, 'r')
+        .select(sql`1`)
+        .where('r.acomodacao_id = a.id') // Usando o alias 'a' definido na query principal
+        .andWhere('r.data_check_in < ?', [checkout])
+        .andWhere('r.data_check_out > ?', [checkin])
+        .andWhere('r.status = ?', [StatusReserva.CONFIRMADA]);
+
+      qb.andWhere(`NOT EXISTS (${subQuery.getFormattedQuery()})`);
+
     }
   
     // Obtendo os resultados e a contagem total

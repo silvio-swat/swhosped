@@ -1,7 +1,7 @@
 import { Factory } from '@mikro-orm/seeder';
 import { fakerPT_BR as faker } from '@faker-js/faker';
-import { Acomodacao, TipoAcomodacao, StatusAcomodacao } from './entities/acomodacao.entity';
-import { TipoLogradouroService } from '../../common/services/tipo-logradouro/tipo-logradouro.service';
+import { Acomodacao, TipoAcomodacao, StatusAcomodacao } from './../../../resources/acomodacao/entities/acomodacao.entity';
+import { TipoLogradouroService } from '../../../common/services/tipo-logradouro/tipo-logradouro.service';
 import { EntityManager } from '@mikro-orm/postgresql'; // Importação correta para PostgreSQL
 
 

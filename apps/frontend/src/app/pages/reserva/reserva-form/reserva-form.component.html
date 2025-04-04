@@ -137,6 +137,7 @@
                 [(ngModel)]="reserva().cliente.nomeCompleto"
                 name="nomeCompleto"
                 class="w-full border rounded-md"
+                [disabled]="getisUserLoggedIn()"
                 required 
               />
             </div>
@@ -151,6 +152,7 @@
                 [(ngModel)]="reserva().cliente.email"
                 name="email"
                 class="w-full border rounded-md"
+                [disabled]="getisUserLoggedIn()"
                 required 
               />
             </div>
@@ -164,6 +166,7 @@
                 [(ngModel)]="reserva().cliente.telefone"
                 name="telefone"
                 [styleClass]="'w-full border rounded-md'"
+                [disabled]="getisUserLoggedIn()"
                 required
               ></p-inputMask>
             </div>
@@ -177,6 +180,7 @@
                 [(ngModel)]="reserva().cliente.cpf"
                 name="cpf"
                 [styleClass]="'w-full border rounded-md'"
+                [disabled]="getisUserLoggedIn()"
                 required
               ></p-inputMask>
             </div>

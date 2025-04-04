@@ -64,10 +64,7 @@
                   class="p-button-sm p-button-outlined p-button-rounded hidden md:inline-flex">
           </button>
           
-          <!-- <button pButton pRipple 
-                  icon="pi pi-cog" 
-                  class="p-button-text p-button-rounded">
-          </button> -->
+
           
           <button pButton pRipple 
                   icon="pi pi-sign-out" 
@@ -76,11 +73,6 @@
                   class="p-button-sm p-button-danger p-button-rounded hidden sm:inline-flex">
           </button>
   
-          <!-- Botão Menu Mobile -->
-          <!-- <button pButton icon="pi pi-bars" 
-                  (click)="toggleMenu()" 
-                  class="p-button-text p-button-rounded lg:hidden">
-          </button> -->
         </div>
       <!-- Botão Menu Responsivo -->
       <button class="lg:hidden" (click)="toggleMenu()">
@@ -92,32 +84,34 @@
       <div *ngIf="menuAberto" class="lg:hidden bg-green-800 pb-4 px-4 rounded-b-lg shadow-lg">
         <ul class="space-y-2">
           <li>
-            <a routerLink="/admin/dashboard" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
-              <i class="pi pi-chart-bar mr-3"></i> Dashboard
-            </a>
           </li>
           <li>
-            <a routerLink="/admin/acomodacoes" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
+            <a routerLink="" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
               <i class="pi pi-home mr-3"></i> Acomodações
             </a>
             <ul class="pl-8 mt-1 space-y-1">
               <li>
-                <a routerLink="/admin/acomodacoes/novo" pRipple class="block px-3 py-1 rounded hover:bg-green-700 text-sm">
+                <a routerLink="/admin/cad-acomodacao" pRipple class="block px-3 py-1 rounded hover:bg-green-700 text-sm">
                   + Nova Acomodação
                 </a>
               </li>
+              <li>
+                <a routerLink="/admin" pRipple class="block px-4 py-2 hover:bg-green-600">
+                  <i class="pi pi-list mr-2"></i> Gerenciar
+                </a>
+              </li>              
             </ul>
           </li>
           <li>
-            <a routerLink="/admin/reservas" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
+            <a routerLink="/admin/reserva-admin" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
               <i class="pi pi-calendar mr-3"></i> Reservas
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a routerLink="/admin/usuarios" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
               <i class="pi pi-users mr-3"></i> Usuários
             </a>
-          </li>
+          </li> -->
           <li class="pt-2 border-t border-green-600">
             <a routerLink="/" pRipple class="block px-4 py-2 rounded hover:bg-green-700">
               <i class="pi pi-globe mr-3"></i> Site Público

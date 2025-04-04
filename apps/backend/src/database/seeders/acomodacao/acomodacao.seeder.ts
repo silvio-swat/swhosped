@@ -1,16 +1,10 @@
 import { Seeder } from '@mikro-orm/seeder';
 import { EntityManager } from '@mikro-orm/postgresql'; // Importação correta para PostgreSQL
-import { AcomodacaoFactory } from './../../resources/acomodacao/acomodacao.factory';
-import { TipoLogradouroService } from '../../common/services/tipo-logradouro/tipo-logradouro.service'; 
+import { AcomodacaoFactory } from './acomodacao.factory';
+import { TipoLogradouroService } from '../../../common/services/tipo-logradouro/tipo-logradouro.service'; 
 
 
 export class AcomodacaoSeeder extends Seeder {
-    // constructor(
-    //     private readonly tipoLogradouroService: TipoLogradouroService,
-    //     private em: EntityManager,
-    //   ) {
-    //     super()
-    //   }
 
   async run(em: EntityManager): Promise<void> {
 

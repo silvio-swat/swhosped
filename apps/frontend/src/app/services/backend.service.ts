@@ -7,6 +7,7 @@ import { apiLinks } from '../shared/environment';
 export class BackendService {
   apiLinks = apiLinks;
 
+  // Usado para completar a url do servidor backend
   getServerUrl() {
     return apiLinks.devNetwork;
   }

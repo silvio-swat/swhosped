@@ -6,7 +6,6 @@ import { Cliente } from '../cliente/cliente.entity';
 import { Acomodacao } from '../acomodacao/entities/acomodacao.entity';
 import { FilterReservaDto } from '../reserva/dto/filtro-reserva.dto';
 import { PaginatedReservaResult } from './reserva.interface';
-import { FilterReservaAdminDto } from './dto/filtro-reserva-admin.dto';
 
 @Injectable()
 export class ReservaService {
@@ -93,7 +92,7 @@ export class ReservaService {
 
   async findAllWithFilters(query: FilterReservaDto): Promise<PaginatedReservaResult> {
     const page = query.page && query.page > 0 ? query.page : 1;
-    const limit = query.limit && query.limit > 0 ? query.limit : 10;
+    const limit = query.limit && query.limit > 0 ? query.limit : 12;
     const offset = (page - 1) * limit;
 
     // Criando a query base
@@ -131,96 +130,34 @@ export class ReservaService {
     };
   }
 
-  // async findAllWithFiltersAdmin(query: FilterReservaDto): Promise<PaginatedReservaResult> {
-  //   const page = query.page && query.page > 0 ? query.page : 1;
-  //   const limit = query.limit && query.limit > 0 ? query.limit : 10;
-  //   const offset = (page - 1) * limit;
-
-  //   // Criando a query base
-  //   const qb = this.em.createQueryBuilder(Reserva, 'r')
-  //     .leftJoinAndSelect('r.cliente', 'c')
-  //     .leftJoinAndSelect('r.acomodacao', 'a');
-
-  //   // Aplicando filtros
-  //   if (query.cpf) {
-  //     qb.andWhere({ cliente: { cpf: { $ilike: `%${query.cpf}%` } } });
-  //   }
-
-  //   if (query.email) {
-  //     qb.andWhere({ cliente: { email: { $ilike: `%${query.email}%` } } });
-  //   }
-
-  //   if (query.telefone) {
-  //     qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
-  //   }
-
-  //   if (query.telefone) {
-  //     qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
-  //   }    
-
-  //   // Obtendo os resultados e a contagem total
-  //   const [data, totalItems] = await qb
-  //     .limit(limit)
-  //     .offset(offset)
-  //     .getResultAndCount();
-
-  //   const totalPages = Math.ceil(totalItems / limit);
-
-  //   return {
-  //     data,
-  //     totalItems,
-  //     totalPages,
-  //     currentPage: page,
-  //   };
-  // }
-
-  async findAllWithFiltersAdmin(query: FilterReservaAdminDto): Promise<PaginatedReservaResult> {
+  async findAllWithFiltersAdmin(query: FilterReservaDto): Promise<PaginatedReservaResult> {
     const page = query.page && query.page > 0 ? query.page : 1;
-    const limit = query.limit && query.limit > 0 ? query.limit : 10;
+    const limit = query.limit && query.limit > 0 ? query.limit : 12;
     const offset = (page - 1) * limit;
 
+    // Criando a query base
     const qb = this.em.createQueryBuilder(Reserva, 'r')
       .leftJoinAndSelect('r.cliente', 'c')
       .leftJoinAndSelect('r.acomodacao', 'a');
 
+    // Aplicando filtros
     if (query.cpf) {
-      qb.andWhere({ 'c.cpf': { $ilike: `%${query.cpf}%` } });
+      qb.andWhere({ cliente: { cpf: { $ilike: `%${query.cpf}%` } } });
     }
 
     if (query.email) {
-      qb.andWhere({ 'c.email': { $ilike: `%${query.email}%` } });
+      qb.andWhere({ cliente: { email: { $ilike: `%${query.email}%` } } });
     }
 
     if (query.telefone) {
-      qb.andWhere({ 'c.telefone': { $ilike: `%${query.telefone}%` } });
+      qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
     }
 
-    if (query.status) {
-      qb.andWhere({ 'r.status': query.status });
-    }
+    if (query.telefone) {
+      qb.andWhere({ cliente: { telefone: { $ilike: `%${query.telefone}%` } } });
+    }    
 
-    if (query.dataInicio && query.dataFim) {
-      const dataInicio = new Date(query.dataInicio);
-      const dataFim = new Date(query.dataFim);
-
-      qb.andWhere({
-        $or: [
-          {
-            'r.dataCheckIn': {
-              $gte: dataInicio,
-              $lte: dataFim,
-            },
-          },
-          {
-            'r.dataCheckOut': {
-              $gte: dataInicio,
-              $lte: dataFim,
-            },
-          },
-        ],
-      });
-    } 
-
+    // Obtendo os resultados e a contagem total
     const [data, totalItems] = await qb
       .limit(limit)
       .offset(offset)

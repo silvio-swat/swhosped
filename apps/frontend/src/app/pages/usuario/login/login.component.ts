@@ -41,6 +41,15 @@ export class LoginComponent {
    */
   loading = signal(false);
 
+  constructor(
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    const notification = navigation?.extras.state?.['notification'];
+    if (notification) {
+      this.notify.notify(notification.severity, notification.detail);
+    }
+  }
+
   /**
    * Submete o formulário de login
    */

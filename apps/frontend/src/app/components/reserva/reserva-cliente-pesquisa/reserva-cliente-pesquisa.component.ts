@@ -5,6 +5,7 @@ import { ReservaFiltroPesquisa } from '../../../interfaces/reserva.interface';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber'; // Adicione esta linha
 import { InputMaskModule } from 'primeng/inputmask';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-reserva-cliente-pesquisa',
@@ -17,9 +18,15 @@ export class ReservaClientePesquisaComponent {
   filtro: ReservaFiltroPesquisa = {};
 
   @Output() filtrosAlterados = new EventEmitter<ReservaFiltroPesquisa>();
+  
+  constructor(private authService: AuthService) {}  
 
   aplicarFiltros() {
     this.filtrosAlterados.emit(this.filtro);
   }
+
+  get isUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }  
 }
  

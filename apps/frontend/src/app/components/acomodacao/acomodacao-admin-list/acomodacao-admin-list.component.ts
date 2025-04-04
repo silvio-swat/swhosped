@@ -7,11 +7,14 @@ import { AcomodacaoResponse, FiltroAcomodacao, PaginatedAcomodacaoResult } from 
 import { BackendService } from '../../../services/backend.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/notifications/notification.service';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-acomodacao-admin-list',
-  imports: [ButtonModule, CommonModule],
+  imports: [ButtonModule, CommonModule, ConfirmDialogModule],
   templateUrl: './acomodacao-admin-list.component.html',
+  providers: [ConfirmationService],  
   styleUrl: './acomodacao-admin-list.component.css'
 })
 export class AcomodacaoAdminListComponent implements OnInit {
@@ -19,8 +22,7 @@ export class AcomodacaoAdminListComponent implements OnInit {
   @Input() acomodacoes!: PaginatedAcomodacaoResult;
   imgPath: string;
   private router = inject(Router); // Injeção alternativa
-
-
+  private confirmationService = inject(ConfirmationService);
 
   constructor(private acomodacaoService: AcomodacaoService,
               private backendSrv: BackendService,
@@ -107,16 +109,6 @@ export class AcomodacaoAdminListComponent implements OnInit {
 
     this.acomodacaoState.setAcomodacaoParaEdicao(acomodacao);
     this.router.navigate(['admin/acomodacoes/editar']);    
-    // // Codifica o objeto como string JSON para passar na rota
-    // const acomodacaoJson = encodeURIComponent(JSON.stringify(acomodacao));
-    
-    // // Navega para a rota de edição com o objeto como parâmetro
-    // this.router.navigate(['acomodacoes/editar'], { 
-    //   queryParams: { 
-    //     acomodacao: acomodacaoJson,
-    //     modo: 'edicao'
-    //   } 
-    // });
   }
   
   deleteAcomodacao(acomodacaoId: number): void {
@@ -148,6 +140,23 @@ export class AcomodacaoAdminListComponent implements OnInit {
       }
     });
   }  
+
+  // Método para confirmar o cancelamento
+  confirmDeleteAcomodacao(acomodacaoId: number): void {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir a acomodacao?',
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, cancelar',
+      rejectLabel: 'Não',
+      accept: () => {
+        this.deleteAcomodacao(acomodacaoId);
+      }
+    });
+  }  
   
+  obterEnderecoCompleto(acomodacao: AcomodacaoResponse): string {
+    return this.acomodacaoService.getEnderecoCompleto(acomodacao);
+  }  
    
 }

@@ -100,4 +100,8 @@ export class AcomodacaoListComponent implements OnInit{
       }
     });
   }
+
+  obterEnderecoCompleto(acomodacao: AcomodacaoResponse): string {
+    return this.acomodacaoService.getEnderecoCompleto(acomodacao);
+  }    
 }

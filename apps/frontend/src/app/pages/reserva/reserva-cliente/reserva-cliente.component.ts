@@ -53,4 +53,8 @@ export class ReservaClienteComponent implements OnInit{
       }
     );
   }  
+
+  getisUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }  
 }

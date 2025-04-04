@@ -1,7 +1,7 @@
 <div class="space-y-6 mt-2">
   <!-- Grid de Reservas -->
   @if(reservas.data && reservas.data.length > 0) {
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     @for (reserva of reservas.data; track reserva.id) {
       <div class="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-200">
         <!-- Imagem da Acomodação -->

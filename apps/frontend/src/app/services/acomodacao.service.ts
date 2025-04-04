@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { 
-  CreateAcomodacaoDto, 
   AcomodacaoResponse,
   TipoAcomodacao,
   StatusAcomodacao,
@@ -24,7 +23,6 @@ export class AcomodacaoService {
   ) {
     this.imgPath = this.backendSrv.getServerUrl();
   }
-
 
   createAcomodacao(formData: FormData): Observable<AcomodacaoResponse> {
     // Debug: Mostra todo o conteúdo do FormData

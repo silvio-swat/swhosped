@@ -77,6 +77,8 @@ export class ReservaFormComponent implements OnInit {
     await this.setUserData();
     // Recupera os dados de duas formas diferentes para garantir
     const state = this.router.getCurrentNavigation()?.extras.state || history.state;
+    this.checkIfUserIsLogedIn();
+    
     
     if (state?.['acomodacaoSelecionada']) {
       this.acomodacaoSelecionada = state['acomodacaoSelecionada'];
@@ -252,4 +254,23 @@ prevImage(): void {
   
     return isValid;
   }
+
+  checkIfUserIsLogedIn(): void {
+    if (!this.authService.isLoggedIn()) {
+      const navigationExtras = {
+        state: {
+          notification: {
+            severity: 'warn',
+            summary: 'Atenção',
+            detail: 'Por Favor, faça o login ou Cadastro antes de reservar uma acomodação!'
+          }
+        }
+      };
+      this.router.navigate(['/login'], navigationExtras);
+    }
+  } 
+  
+  getisUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }    
 }

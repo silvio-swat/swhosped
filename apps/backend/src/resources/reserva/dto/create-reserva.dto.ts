@@ -1,9 +1,6 @@
 import { IsDate, IsNumber, IsObject, ValidateNested, IsEnum, IsString, IsNotEmpty, IsEmail, MinDate, Matches, MaxLength } from 'class-validator';
 import { Type, Transform} from 'class-transformer';
 import { StatusReserva } from '../entities/reserva.entity';
-import { Cliente } from './../../cliente/cliente.entity';
-import { Usuario } from './../../usuario/entities/usuario.entity';
-import { IsUnique } from '../../user-client/dto/unique-validator';
 
 // Função auxiliar para transformar valores vazios em null ou números
 const toNumber = ({ value }) => (value === "" ? null : Number(value));
@@ -14,10 +11,7 @@ class ClienteReservaDto {
     @MaxLength(100, { message: 'O nome completo deve ter no máximo 100 caracteres.' })
     nomeCompleto: string;
   
-    @IsEmail({}, { message: 'O e-mail informado não é válido.' })
-    @IsUnique(Usuario, 'email', {
-        message: 'Este e-mail já está cadastrado',
-    })      
+    @IsEmail({}, { message: 'O e-mail informado não é válido.' }) 
     email: string;
   
     @IsString({ message: 'O telefone deve ser uma string.' })
@@ -25,10 +19,7 @@ class ClienteReservaDto {
     telefone: string;
   
     @IsString({ message: 'O CPF deve ser uma string.' })
-    @IsNotEmpty({ message: 'O CPF é obrigatório.' })
-    @IsUnique(Cliente, 'cpf', {
-        message: 'Este CPF já está cadastrado',
-    })    
+    @IsNotEmpty({ message: 'O CPF é obrigatório.' }) 
     @Matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'O CPF deve estar no formato XXX.XXX.XXX-XX.' })
     cpf: string;
 }

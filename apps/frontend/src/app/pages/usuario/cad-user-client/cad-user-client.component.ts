@@ -41,7 +41,8 @@ export class CadUserClientComponent {
   constructor(
     private notify: NotificationService,
     private userClientService: UserClientService    
-  ) {}
+  ) {
+  }
 
   /**
    * Manipulador de eventos de input

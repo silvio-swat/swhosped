@@ -15,6 +15,9 @@
         <p class="text-gray-600 text-sm line-clamp-2">
           {{ acomodacao.descricao }}
         </p>
+        <p class="text-gray-400 mt-1 text-xs line-clamp-2">
+          {{ obterEnderecoCompleto(acomodacao) }}
+        </p>        
         <p class="text-blue-600 mt-1">
           R$ {{ acomodacao.precoPorNoite }} / noite
         </p>
@@ -33,7 +36,7 @@
           type="button"
           icon="pi pi-trash"
           class="p-button-sm p-button-text p-button-danger"
-          (click)="deleteAcomodacao(acomodacao.id)"
+          (click)="confirmDeleteAcomodacao(acomodacao.id)"
         ></button>
       </div>
     </div>
@@ -42,28 +45,41 @@
   }
 </div>
 
-  <!-- Seção de Paginação -->
-  <div class="flex justify-center items-center mt-6">
-    <button pButton type="button" label="Anterior" (click)="paginaAnterior()"
-      [disabled]="acomodacoes.currentPage === 1" class="p-button-outlined mr-2"></button>
-    
-    <ng-container *ngFor="let page of pages; trackBy: trackByPage">
-      <button
-        pButton
-        type="button"
-        [label]="page.toString()"
-        (click)="mudarPagina(page)"
-        [ngClass]="{
-          'p-button-primary': acomodacoes.currentPage === page,
-          'p-button-outlined': acomodacoes.currentPage !== page
-        }"
-        class="mr-2">
-      </button>
-    </ng-container>
-    
-    <button pButton type="button" label="Próxima" (click)="proximaPagina()"
-      [disabled]="acomodacoes.currentPage === acomodacoes.totalPages" class="p-button-outlined">
-    </button>
-  </div>    
+<!-- Seção de Paginação -->
+<div class="flex justify-center items-center mt-6">
+  <!-- Paginação -->
+  @if (acomodacoes.totalPages > 1) {
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-chevron-left" 
+        (click)="paginaAnterior()"
+        [disabled]="acomodacoes.currentPage === 1" 
+        class="p-button-outlined mr-2"
+      ></button>
+      @for (page of pages; track page) {
+        <button
+          pButton
+          type="button"
+          [label]="page.toString()"
+          (click)="mudarPagina(page)"
+          [ngClass]="{
+            'p-button-primary': acomodacoes.currentPage === page,
+            'p-button-outlined': acomodacoes.currentPage !== page
+          }"
+          class="mx-1"
+        ></button>
+      }
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-chevron-right" 
+        (click)="proximaPagina()"
+        [disabled]="acomodacoes.currentPage === acomodacoes.totalPages" 
+        class="p-button-outlined ml-2"
+      ></button>
+  }
+</div>
+<p-confirmdialog />
 
   
