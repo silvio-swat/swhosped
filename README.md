@@ -52,9 +52,17 @@ Crie um banco de dados com o nome desejado.
 
 ### 2️⃣ Configurar MikroORM
 
-Edite o arquivo `mikro-orm.config.ts` para incluir suas credenciais do banco:
+Crie um arquivo `mikro-orm.config.ts` para incluir suas credenciais do banco com o seguinte conteúdo:
 
 ```ts
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+import { Logger } from '@nestjs/common';
+import { Cliente } from './src/resources/cliente/cliente.entity';
+import { Usuario } from './src/resources/usuario/entities/usuario.entity';
+import { Acomodacao } from './src/resources/acomodacao/entities/acomodacao.entity';
+import { Reserva } from './src/resources/reserva/entities/reserva.entity';
+import { defineConfig } from '@mikro-orm/postgresql';
+
 export default {
   entities: ['./dist/**/*.entity.js'],
   dbName: 'seu_banco',
