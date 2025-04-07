@@ -79,6 +79,10 @@ npm run mikro-orm migration:create
 ```sh
 npm run mikro-orm migration:up
 ```
+Conectar ao banco de dados e adicionar o campo email na tabela usuario conforme comando abaixo
+```sql
+swhosped=# ALTER TABLE usuario ADD COLUMN email VARCHAR(255);
+```
 
 ### 4️⃣ Configurar CORS (main.ts)
 
@@ -170,7 +174,7 @@ Acesse: [http://localhost:4200](http://localhost:4200)
 ✅ Para testar um usuário administrador, altere seu tipo diretamente no **PostgreSQL**:
 
 ```sql
-UPDATE users SET role = 'Administrador' WHERE email = 'teste@email.com';
+UPDATE usuario SET tipo_acesso = 'Administrador' WHERE email = 'teste@email.com';
 ```
 
 ---
