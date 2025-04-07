@@ -9,8 +9,8 @@ import { defineConfig } from '@mikro-orm/postgresql';
 export default defineConfig({
   entities: [Cliente, Usuario, Acomodacao, Reserva],
   dbName: 'swhosped',
-  user: 'silviosw',
-  password: '123456',
+  user: 'root',
+  password: 'K@ssy2009',
   host: 'localhost',
   port: 5432,
   debug: true,

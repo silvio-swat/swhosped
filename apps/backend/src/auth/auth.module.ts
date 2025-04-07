@@ -27,7 +27,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     MikroOrmModule.forFeature([Usuario]),
     
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [
+         ConfigModule.forRoot({
+            isGlobal: true, // Torna o Config disponível em qualquer lugar
+            envFilePath: '.env', // Aponta pro arquivo .env na raiz do projeto
+         })
+      ],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '60m' },

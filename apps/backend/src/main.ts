@@ -26,7 +26,7 @@ async function bootstrap() {
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
+  const port = 3000;
 
   // Configuração do CORS
   app.enableCors({
@@ -39,7 +39,8 @@ async function bootstrap() {
         'http://192.168.68.77:4200',
         'http://192.168.68.52:4200',        
         'http://127.0.0.1:4200',
-        'http://localhost:4200'
+        'http://localhost:4200',
+	'http://15.228.49.233:80'
       ];
   
       if (!origin || allowedOrigins.includes(origin)) {
