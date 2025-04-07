@@ -28,9 +28,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   const port = 3000;
 
+
   // Configuração do CORS
   app.enableCors({
-    //origin: 'http://localhost:4200', // URL exata do frontend
+    origin: 'http://localhost:4200', // URL exata do frontend
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://192.168.68.73:4200',
@@ -56,7 +57,7 @@ async function bootstrap() {
 
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    ` Application is running on: http://localhost:${port}/${globalPrefix}`
   );
 
   // const server = app.getHttpServer();

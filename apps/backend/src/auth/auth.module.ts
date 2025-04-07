@@ -28,10 +28,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     
     JwtModule.registerAsync({
       imports: [
-         ConfigModule.forRoot({
-            isGlobal: true, // Torna o Config disponível em qualquer lugar
-            envFilePath: '.env', // Aponta pro arquivo .env na raiz do projeto
-         })
+         ConfigModule
       ],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

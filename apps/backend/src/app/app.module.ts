@@ -32,7 +32,7 @@ import { AuthModule } from '../auth/auth.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true, // Torna as variáveis disponíveis em todos os módulos
-      envFilePath: '/.env', // Caminho para o arquivo .env
+      envFilePath: join(process.cwd(), 'apps', 'backend', '.env')
     }),
     AuthModule,
   ],
