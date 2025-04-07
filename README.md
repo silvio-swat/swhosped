@@ -52,7 +52,7 @@ Crie um banco de dados com o nome desejado.
 
 ### 2️⃣ Configurar MikroORM
 
-Crie um arquivo `mikro-orm.config.ts` para incluir suas credenciais do banco com o seguinte conteúdo:
+Crie um arquivo `mikro-orm.config.ts` na raiz do backend para incluir suas credenciais do banco com o seguinte conteúdo:
 
 ```ts
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
