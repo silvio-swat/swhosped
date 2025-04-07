@@ -83,7 +83,7 @@ export class AcomodacaoService {
       if (first.startsWith('http://') || first.startsWith('https://')) {
         return first;
       } else {
-        return this.imgPath + first.replace('apps/backend', '');
+        return this.imgPath + first.replace('apps/backend/', '');
       }
     }
     return 'assets/imagem-padrao.jpg';
