@@ -31,7 +31,6 @@ async function bootstrap() {
 
   // Configuração do CORS
   app.enableCors({
-    origin: 'http://localhost:4200', // URL exata do frontend
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://192.168.68.73:4200',

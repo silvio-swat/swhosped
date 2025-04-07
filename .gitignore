@@ -34,6 +34,7 @@ yarn-error.log
 testem.log
 /typings
 /apps/backend/uploads
+/apps/backend/mikro-orm.config.ts
 
 # System Files
 .DS_Store
