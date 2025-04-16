@@ -41,7 +41,9 @@ async function bootstrap() {
         'http://192.168.68.62:4200',        
         'http://127.0.0.1:4200',
         'http://localhost:4200',
-	      'http://15.228.49.233:80'
+	      'http://15.228.49.233:80',
+	      'http://54.233.96.172:80'
+
       ];
   
       if (!origin || allowedOrigins.includes(origin)) {
