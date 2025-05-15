@@ -1,7 +1,7 @@
 # SWHosped - Gestão Integrada para Hospedagens com Angular e NestJS"
 
 
-Bem-vindo ao **SWHosped**, um monorepo NX utilizando **Angular 19** e **NestJS 10** para gerenciamento de hospedagens!
+**SWHosped** é um Projeto que tem como objetivo oferecer um sistema de **gerenciamento de hospedagens** em monorepo NX, utilizando **Angular 19** e **NestJS 10** . Cadastre acomodações, por tipo, preço, busca de endereço por CEP e criando um album de fotos. Cadastre-se como usuário ou administrador, faça reservas visualizando a localização da acomodação no mapa. Você pode gerenciar e cancelar suas reservas. 
 
 ## 🚀 Tecnologias Principais
 
